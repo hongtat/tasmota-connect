@@ -16,6 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+String appVersion() { return "1.0.0" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -42,7 +43,7 @@ preferences {
 
 def mainPage() {
     if (state?.install) {
-        dynamicPage(name: "mainPage", title: "Tasmota (Connect)") {
+        dynamicPage(name: "mainPage", title: "Tasmota (Connect) - v${appVersion()}") {
             section(){
                 href "addDevice", title:"New Tasmota Device", description:""
             }
