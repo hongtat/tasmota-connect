@@ -1,5 +1,5 @@
 /**
- *  Tasmota - Switch Child Device
+ *  Tasmota - Child Switch Device
  *
  *  Copyright 2020 AwfullySmart.com - HongTat Tan
  *

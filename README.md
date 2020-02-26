@@ -16,13 +16,18 @@ Tasmota (Connect) is a SmartApp & Device Type for [Samsung SmartThings](https://
 #### GitHub Install
 1. If you haven’t enabled GitHub integration, please visit here for [instructions](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html).
 2. Sign in to SmartThings IDE: https://account.smartthings.com/login
-3. Under `My SmartApps` & `My Device Handlers` > click `Settings` > `Add new repository` > enter the following:
+3. Under `My SmartApps` > click `Settings` > `Add new repository` > enter the following:
    * Owner: **hongtat**
    * Name: **tasmota-connect**
    * Branch: **Master**
 4. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
-5. Open your SmartThings mobile app
-6. Add Tasmota (Connect) SmartApp
+5. Under `My Device Handlers` > click `Settings` > `Add new repository` > enter the following:
+   * Owner: **hongtat**
+   * Name: **tasmota-connect**
+   * Branch: **Master**
+6. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
+7. Open your SmartThings mobile app
+8. Add Tasmota (Connect) SmartApp
    * (New) Go to: `SmartApps` > `+` > `My SmartApps` > `Tasmota (Connect)`
    * (Classic) Go to: `Automation` > `SmartApps` > `Add a SmartApp` > `My Apps` > `Tasmota (Connect)`
 

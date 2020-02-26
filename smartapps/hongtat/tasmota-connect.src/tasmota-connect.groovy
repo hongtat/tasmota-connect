@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.0" }
+String appVersion() { return "1.0.1" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -244,45 +244,63 @@ def addDeviceConfirm() {
     def latestDni = state.nextDni
     if (virtualDeviceType) {
         def selectedDevice = moduleMap().find{ it.key == virtualDeviceType }.value
-        def virtualParent = addChildDevice("hongtat", selectedDevice?.type, "AWFULLYSMART-tasmota-${latestDni}", getHub()?.id, [
-            "completedSetup": true,
-            "label": deviceName
-        ])
+        try {
+            def virtualParent = addChildDevice("hongtat", selectedDevice?.type, "AWFULLYSMART-tasmota-${latestDni}", getHub()?.id, [
+                    "completedSetup": true,
+                    "label": deviceName
+            ])
+            // Tracks all installed devices
+            def deviceList = state?.deviceList ?: []
+            deviceList.push(virtualParent.id as String)
+            state?.deviceList = deviceList
 
-        // Tracks all installed devices
-        def deviceList = state?.deviceList ?: []
-        deviceList.push(virtualParent.id as String)
-        state?.deviceList = deviceList
-
-        // Cross-device Messaging
-        if (selectedDevice?.messaging == true) {
-            subscribe(virtualParent, "messenger", crossDeviceMessaging)
-        }
-
-        // Does this have child device(s)?
-        def channel = selectedDevice?.channel
-        log.debug "channel: " + channel
-        if (channel != null) {
-            if (channel > 1) {
-                try {
-                    def parentChildName = selectedDevice.child[0]
-                    for (i in 2..channel) {
-                        parentChildName = (selectedDevice.child[i-2]) ?: parentChildName
-                        String dni = "${virtualParent.deviceNetworkId}-ep${i}"
-                        def virtualParentChild = virtualParent.addChildDevice(parentChildName, dni, virtualParent.hub.id,
-                        [completedSetup: true, label: "${virtualParent.displayName} ${i}", isComponent: false])
-                        log.debug "Created '${virtualParent.displayName}' - ${i}ch"
-                    }
-                } catch (all) { }
+            // Cross-device Messaging
+            if (selectedDevice?.messaging == true) {
+                subscribe(virtualParent, "messenger", crossDeviceMessaging)
             }
-            virtualParent.updateDataValue("endpoints", channel as String)
-        }
-        virtualParent.initialize()
-        latestDni++
-        state.nextDni = latestDni
-        dynamicPage(name: "addDeviceConfirm", title: "Add a device", nextPage: "mainPage") {
-            section {
-                paragraph "The device has been added. Please proceed to configure device."
+
+            // Does this have child device(s)?
+            def channel = selectedDevice?.channel
+            log.debug "channel: " + channel
+            if (channel != null && selectedDevice?.child != false) {
+                if (channel > 1) {
+                    try {
+                        def parentChildName = selectedDevice.child[0]
+                        for (i in 2..channel) {
+                            parentChildName = (selectedDevice.child[i-2]) ?: parentChildName
+                            String dni = "${virtualParent.deviceNetworkId}-ep${i}"
+                            def virtualParentChild = virtualParent.addChildDevice(parentChildName, dni, virtualParent.hub.id,
+                                    [completedSetup: true, label: "${virtualParent.displayName} ${i}", isComponent: false])
+                            log.debug "Created '${virtualParent.displayName}' - ${i}ch"
+                        }
+                    } catch (all) {
+                        dynamicPage(name: "addDeviceConfirm", title: "Add a device", nextPage: "mainPage") {
+                            section {
+                                paragraph "Error: ${(all as String).split(":")[1]}."
+                            }
+                        }
+                    }
+                }
+                virtualParent.updateDataValue("endpoints", channel as String)
+            }
+            virtualParent.initialize()
+            latestDni++
+            state.nextDni = latestDni
+            dynamicPage(name: "addDeviceConfirm", title: "Add a device", nextPage: "mainPage") {
+                section {
+                    paragraph "The device has been added. Please proceed to configure device."
+                }
+            }
+        } catch (e) {
+            dynamicPage(name: "addDeviceConfirm", title: "Have you added all the device handlers?", nextPage: "mainPage") {
+                section {
+                    paragraph "Please follow these steps:", required: true
+                    paragraph "1. Sign in to your SmartThings IDE.", required: true
+                    paragraph "2. Under 'My Device Handlers' > click 'Settings' > 'Add new repository' > enter the following", required: true
+                    paragraph "   Owner: hongtat, Name: tasmota-connect, Branch: Master", required: true
+                    paragraph "3. Under 'Update from Repo' > click 'tasmota-connect' > Select all files > Tick 'Publish' > then 'Execute Update'", required: true
+                    paragraph "Error message: ${(e as String).split(":")[1]}.", required: true
+                }
             }
         }
     } else {
