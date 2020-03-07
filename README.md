@@ -64,7 +64,7 @@ If your Tasmota device is not listed below, choose a **Generic** device that is 
 A Virtual Device uses a RF or IR bridge to control your dumb RF / IR devices.
 * Virtual Switch -- Add a SmartThings generic switch that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
 * Virtual Shade  -- Add a SmartThings shade/blind that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
-
+* Virtual Button -- Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
   
 #### Configuring a Virtual Switch
 1. Choose a RF or IR Bridge

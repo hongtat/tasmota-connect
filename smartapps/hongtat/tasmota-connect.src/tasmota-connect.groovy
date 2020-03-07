@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.1" }
+String appVersion() { return "1.0.2" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -194,6 +194,18 @@ def configureDevice(params){
                     deleteChildSetting(state.currentId, "payload_open")
                     deleteChildSetting(state.currentId, "payload_close")
                     deleteChildSetting(state.currentId, "payload_pause")
+                }
+            }
+        }
+        // Virtual Button
+        if (moduleParameter && moduleParameter.settings.contains('virtualButton') && childSetting(state.currentId, "bridge") != null) {
+            def numberOfButtons = moduleParameter?.channel ?: 1
+            section("RF/IR Code") {
+                for (def buttonNumer : 1..numberOfButtons) {
+                    input("dev:${state.currentId}:button_${buttonNumer}", "text",
+                            title: "Button ${buttonNumer} 'pushed' state code",
+                            description: "Tap to set",
+                            defaultValue: "", required: false, submitOnChange: false)
                 }
             }
         }
@@ -443,13 +455,10 @@ def childDevicesByType(typeList) {
 
 def moduleMap() {
     def customModule = [
-        "1":    [name: ".Sonoff Basic", type: "Tasmota Generic Switch"],
-        "2":    [name: ".Sonoff RF", type: "Tasmota Generic Switch"],
-        "3":    [name: ".Sonoff SV", type: "Tasmota Generic Switch"],
-        "5":    [name: ".Sonoff Dual", type: "Tasmota Generic Switch", channel: 2],
-        "6":    [name: ".Sonoff Pow", type: "Tasmota Metering Switch"],
+        "1":    [name: ".Sonoff Basic / Mini / RF / SV", type: "Tasmota Generic Switch"],
+        "5":    [name: ".Sonoff Dual / Dual R2", type: "Tasmota Generic Switch", channel: 2],
+        "6":    [name: ".Sonoff Pow / Pow R2 / S31", type: "Tasmota Metering Switch"],
         "25":   [name: ".Sonoff Bridge", type: "Tasmota RF Bridge"],
-        "41":   [name: ".Sonoff S31", type: "Tasmota Metering Switch"],
         "44":   [name: ".Sonoff iFan", type: "Tasmota Fan Light", channel: 2],
         "1000": [name: "Generic Switch (1ch)", type: "Tasmota Generic Switch"],
         "1001": [name: "Generic Switch (2ch)", type: "Tasmota Generic Switch", channel: 2],
@@ -462,7 +471,11 @@ def moduleMap() {
         "1008": [name: "Generic Dimmer Switch", type: "Tasmota Dimmer Switch"],
         "1010": [name: "Generic IR Bridge", type: "Tasmota IR Bridge"],
         "1100": [name: "Virtual Switch", type: "Tasmota Virtual Switch"],
-        "1101": [name: "Virtual Shade/Blind", type: "Tasmota Virtual Shade"]
+        "1101": [name: "Virtual Shade/Blind", type: "Tasmota Virtual Shade"],
+        "1111": [name: "Virtual 1-button", type: "Tasmota Virtual 1 Button"],
+        "1112": [name: "Virtual 2-button", type: "Tasmota Virtual 2 Button"],
+        "1114": [name: "Virtual 4-button", type: "Tasmota Virtual 4 Button"],
+        "1116": [name: "Virtual 6-button", type: "Tasmota Virtual 6 Button"]
     ]
     def defaultModule = [
          "Tasmota Generic Switch":   [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
@@ -472,7 +485,11 @@ def moduleMap() {
          "Tasmota RF Bridge":        [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
          "Tasmota IR Bridge":        [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
          "Tasmota Virtual Switch":   [channel: 1, messaging: true,    virtual: true, child: false, settings: ["virtualSwitch", "bridge"]],
-         "Tasmota Virtual Shade":    [channel: 1, messaging: true,    virtual: true, child: false, settings: ["virtualShade", "bridge"]]
+         "Tasmota Virtual Shade":    [channel: 1, messaging: true,    virtual: true, child: false, settings: ["virtualShade", "bridge"]],
+         "Tasmota Virtual 1 Button": [channel: 1, messaging: true,    virtual: true, child: false, settings: ["virtualButton", "bridge"]],
+         "Tasmota Virtual 2 Button": [channel: 2, messaging: true,    virtual: true, child: false, settings: ["virtualButton", "bridge"]],
+         "Tasmota Virtual 4 Button": [channel: 4, messaging: true,    virtual: true, child: false, settings: ["virtualButton", "bridge"]],
+         "Tasmota Virtual 6 Button": [channel: 6, messaging: true,    virtual: true, child: false, settings: ["virtualButton", "bridge"]]
     ]
     def modules = [:]
     customModule.each { k,v ->
@@ -543,6 +560,10 @@ def deleteChildSetting(id, name=null) {
         // otherwise, delete everything
         ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause"].each { n ->
             app?.deleteSetting("dev:${id}:${n}" as String)
+        }
+        // button
+        for(def n : 1..6) {
+            app?.deleteSetting("dev:${id}:button_${n}" as String)
         }
     }
 }
