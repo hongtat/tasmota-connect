@@ -18,7 +18,7 @@
  */
 
 metadata {
-    definition (name: "Tasmota Child Button Device", namespace: "hongtat", author: "HongTat Tan") {
+    definition (name: "Tasmota Child Button Device", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "x.com.st.d.remotecontroller") {
         capability "Button"
         capability "Sensor"
     }
