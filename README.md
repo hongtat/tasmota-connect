@@ -37,7 +37,7 @@ For Tasmota (Connect) to function correctly, please make sure you install the Sm
 1. Sign in to SmartThings IDE: https://account.smartthings.com/login
 2. SmartApp Installation
    1. Under `My SmartApps` > choose `New SmartApp` > `From Code`
-   2. Paste the SmartApp code [[link](https://raw.githubusercontent.com/hongtat/tasmota-connect/master/smartapps/hongtat/tasmota-connect.src/tasmota-connect.groovy)] into the text box
+   2. Paste the SmartApp code [[link](https://github.com/hongtat/tasmota-connect/blob/master/smartapps/hongtat/tasmota-connect.src/tasmota-connect.groovy)] into the text box
    3. Click "***Save***" and "***Publish***" it to yourself.
 3. Device Handler Installation
    1. Click on this [[link](https://github.com/hongtat/tasmota-connect/tree/master/devicetypes/hongtat)] to obtain the device handlers. For each of the device handlers, do the following:
