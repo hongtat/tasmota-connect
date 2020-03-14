@@ -107,6 +107,9 @@ A Virtual Device uses a RF or IR bridge to control your dumb RF / IR devices.
 
 ####  Where can I find out more about Tasmota command for sending/receiving IR / RF codes?
 Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/#/Commands
-      
+
+#### I have feedback, questions, suggestion..
+Please use [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback and questions.
+
 ## License
 GPL-3.0
