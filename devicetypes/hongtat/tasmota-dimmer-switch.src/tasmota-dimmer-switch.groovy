@@ -137,6 +137,10 @@ def parseEvents(status, json) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
         def now = new Date().format("${eventdateformat}a", location.timeZone)
+        if (channel == null) {
+            device.updateDataValue("endpoints", 1 as String)
+            channel = 1
+        }
 
         // Power
         if (channel != null) {
