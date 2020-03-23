@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.2" }
+String appVersion() { return "1.0.3" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -293,6 +293,8 @@ def addDeviceConfirm() {
                         }
                     }
                 }
+            }
+            if (channel != null) {
                 virtualParent.updateDataValue("endpoints", channel as String)
             }
             virtualParent.initialize()
