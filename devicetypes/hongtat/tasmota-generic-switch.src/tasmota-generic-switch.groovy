@@ -149,6 +149,30 @@ def parseEvents(status, json) {
             }
         }
 
+        // Temperature, Humidity
+        def resultTH = null
+        if (json?.StatusSNS != null) {
+            for (record in json.StatusSNS) {
+                if (record.value instanceof Map && (record.value.containsKey("Humidity") || record.value.containsKey("Temperature"))) {
+                    resultTH = record.value
+                }
+            }
+            if (resultTH != null) {
+                def childMessage = [:]
+                if (resultTH.containsKey("Humidity")) {
+                    childMessage.humidity = Math.round((resultTH.Humidity as Double) * 100) / 100
+                }
+                if (resultTH.containsKey("Temperature")) {
+                    childMessage.temperature = resultTH.Temperature.toFloat()
+                }
+                if (json?.StatusSNS?.TempUnit != null) {
+                    childMessage.tempUnit = json?.StatusSNS?.TempUnit
+                }
+                def child = childDevices.find { it.typeName == "Tasmota Child Temp/Humidity Sensor" }
+                child?.parseEvents(200, childMessage)
+            }
+        }
+
         // MAC
         if (json?.StatusNET?.Mac != null) {
             def dni = parent.setNetworkAddress(json.StatusNET.Mac)

@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.3" }
+String appVersion() { return "1.0.4" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -458,6 +458,7 @@ def childDevicesByType(typeList) {
 def moduleMap() {
     def customModule = [
         "1":    [name: ".Sonoff Basic / Mini / RF / SV", type: "Tasmota Generic Switch"],
+        "4":    [name: ".Sonoff TH", type: "Tasmota Generic Switch", channel: 2, child: ["Tasmota Child Temp/Humidity Sensor"]],
         "5":    [name: ".Sonoff Dual / Dual R2", type: "Tasmota Generic Switch", channel: 2],
         "6":    [name: ".Sonoff Pow / Pow R2 / S31", type: "Tasmota Metering Switch"],
         "25":   [name: ".Sonoff Bridge", type: "Tasmota RF Bridge"],

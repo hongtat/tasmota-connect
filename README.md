@@ -64,7 +64,7 @@ If your Tasmota device is not listed below, choose a **Generic** device that is 
 * **Generic IR Bridge**
 * Sonoff Basic
 * Sonoff RF
-* Sonoff TH (On/Off only)
+* Sonoff TH
 * Sonoff Dual & Dual R2
 * Sonoff Pow & Pow R2
 * Sonoff 4CH & 4CH Pro
