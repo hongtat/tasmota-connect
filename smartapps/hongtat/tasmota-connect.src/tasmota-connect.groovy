@@ -50,7 +50,7 @@ def mainPage() {
             section("Installed Devices"){
                 getChildDevices().sort({ a, b -> a.label <=> b.label }).each {
                     def typeName = it.typeName
-                    if (moduleMap().find{ it.value.type == "${typeName}" }?.value.settings.contains('ip')) {
+                    if (moduleMap().find{ it.value.type == "${typeName}" }?.value?.settings?.contains('ip')) {
                         href "configureDevice", title:"$it.label", description: (childSetting(it.id, "ip") ?: "Tap to set IP address"), params: [did: it.deviceNetworkId]
                     } else {
                         href "configureDevice", title:"$it.label", description: "", params: [did: it.deviceNetworkId]
