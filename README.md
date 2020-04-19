@@ -75,10 +75,15 @@ If your Tasmota device is not listed below, choose a **Generic** device that is 
 * Sonoff iFan02, iFan03
 
 ## Virtual Device
-A Virtual Device uses a RF or IR bridge to control your dumb RF / IR devices.
-* Virtual Switch -- Add a SmartThings generic switch that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
-* Virtual Shade  -- Add a SmartThings shade/blind that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
-* Virtual Button -- Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
+A Virtual Device uses a RF or IR bridge to control or read your dumb RF / IR devices.
+
+Virtual Device | Usage
+---- | ----
+Virtual Switch          | Add a SmartThings generic switch that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
+Virtual Shade           | Add a SmartThings shade/blind that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
+Virtual Button          | Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
+Virtual Contact Sensor  | Add a RF contact sensor
+Virtual Motion Sensor   | Add a RF motion sensor
   
 #### Configuring a Virtual Switch
 1. Choose a RF or IR Bridge
@@ -96,6 +101,15 @@ A Virtual Device uses a RF or IR bridge to control your dumb RF / IR devices.
    In the example below, the code is **70C70F**
    
    * "RfReceived":{"Sync":7110,"Low":210,"High":660,"Data":"**70C70F**","RfKey":"None"}
+
+#### Configuring a Virtual Contact / Motion Sensor / Button
+1. Choose a RF Bridge
+2. Enter the RFReceived Data that represents "OPEN", "CLOSE", "ACTIVE", "INACTIVE" or button state
+             
+   In the example below, the code is **70C70F**
+   
+   * "RfReceived":{"Sync":7110,"Low":210,"High":660,"Data":"**70C70F**","RfKey":"None"}
+
 
 ## FAQ
 
