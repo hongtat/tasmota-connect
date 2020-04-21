@@ -47,14 +47,15 @@ For Tasmota (Connect) to function correctly, please make sure you install the Sm
 4. For SmartApp and Device Handler updates, perform the same steps in manual installation.   
 
 ## Adding your Tasmota devices
-1. Under `SmartApps`, select `Tasmota (Connect)`
-2. Tap `New Tasmota Device`, and select the Tasmota device you want to add
-3. Fill in the `IP address`, `username` (optional), `password` (optional) of the Tasmota device
+1. Open your SmartThings mobile app
+2. Under `SmartApps`, select `Tasmota (Connect)`
+3. Tap `New Tasmota Device`, and select the Tasmota device you want to add
+4. Fill in the `IP address`, `username` (optional), `password` (optional) of the Tasmota device
 
 
 ## Supported Tasmota Devices
 
-It should work for most switches, dimmers, relays, plugs, power strips, sockets, wall outlets, fan controllers, IR bridges and RF bridges listed in the [Tasmota Device Templates Repository](https://templates.blakadder.com/).
+It should work for most switches, dimmers, relays, plugs, power strips, sockets, wall outlets, fan controllers, RF motion/contact sensors, RF remote controllers, IR bridges and RF bridges listed in the [Tasmota Device Templates Repository](https://templates.blakadder.com/).
 
 If your Tasmota device is not listed below, choose a **Generic** device that is similar to your Tasmota device.
 
