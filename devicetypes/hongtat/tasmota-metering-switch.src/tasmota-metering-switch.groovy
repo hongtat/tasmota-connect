@@ -152,6 +152,9 @@ def parseEvents(status, json) {
                 if (powerStatus != null) {
                     if ((channel == 1) || (channel > 1 && i == 1)) {
                         events << sendEvent(name: "switch", value: powerStatus)
+                        if (powerStatus == "off") {
+                            events << sendEvent(name: "power", value: "0", unit: "W", isStateChange:true, displayed:false)
+                        }
                     } else {
                         String childDni = "${device.deviceNetworkId}-ep$i"
                         def child = childDevices.find { it.deviceNetworkId == childDni }
@@ -164,9 +167,14 @@ def parseEvents(status, json) {
 
         // Energy
         if (json?.StatusSNS != null) {
-            events << sendEvent(name: "power", value: json?.StatusSNS?.ENERGY?.Power, unit: "W", isStateChange:true, displayed:false)
-            events << sendEvent(name: "energy", value: json?.StatusSNS?.ENERGY?.Total, unit: "kWh", isStateChange:true, displayed:false)
-            log.debug "W: '${json.StatusSNS.ENERGY.Power}'"
+            if (json?.StatusSNS?.ENERGY?.Power != null && json?.StatusSNS?.ENERGY?.Power?.trim() != "") {
+                events << sendEvent(name: "power", value: json?.StatusSNS?.ENERGY?.Power, unit: "W", isStateChange:true, displayed:false)
+                log.debug "W (Power): '${json.StatusSNS.ENERGY.Power}'"
+            }
+            if (json?.StatusSNS?.ENERGY?.Total != null && json?.StatusSNS?.ENERGY?.Total?.trim() != "") {
+                events << sendEvent(name: "energy", value: json?.StatusSNS?.ENERGY?.Total, unit: "kWh", isStateChange:true, displayed:false)
+                log.debug "kWh (Total): '${json.StatusSNS.ENERGY.Total}'"
+            }
         }
 
         // MAC
