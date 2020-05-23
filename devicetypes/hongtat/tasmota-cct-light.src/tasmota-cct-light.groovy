@@ -276,7 +276,7 @@ def setGenericName(value){
 def setColorTemperature(kelvin) {
     Integer mired = Math.round(1000000 / kelvin)
     log.debug "kelvin:  ${kelvin}, mired: ${mired}"
-    events << sendEvent(name: "colorTemperature", value: kelvin, displayed: false)
+    sendEvent(name: "colorTemperature", value: kelvin, displayed: false)
     parent.callTasmota(this, "CT ${mired}")
 }
 
