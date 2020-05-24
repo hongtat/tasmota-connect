@@ -67,9 +67,6 @@ metadata {
             tileAttribute ("device.level", key: "SLIDER_CONTROL") {
                 attributeState "level", action: "setLevel", range:"(0..100)"
             }
-            tileAttribute ("device.color", key: "COLOR_CONTROL") {
-                attributeState "color", action: "setColor"
-            }
         }
 
         controlTile("colorTempSliderControl", "device.colorTemperature", "slider", width: 4, height: 1, inactiveLabel: false, range: "(2000..6536)") {
