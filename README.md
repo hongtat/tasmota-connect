@@ -55,7 +55,7 @@ For Tasmota (Connect) to function correctly, please make sure you install the Sm
 
 ## Supported Tasmota Devices
 
-It should work for most switches, dimmers, relays, plugs, power strips, sockets, wall outlets, fan controllers, RF motion/contact sensors, RF remote controllers, IR bridges and RF bridges listed in the [Tasmota Device Templates Repository](https://templates.blakadder.com/).
+It should work for most switches, lights (CCT, RGB, RGBW), dimmers, relays, plugs, power strips, sockets, wall outlets, fan controllers, RF motion/contact sensors, RF remote controllers, IR bridges and RF bridges listed in the [Tasmota Device Templates Repository](https://templates.blakadder.com/).
 
 If your Tasmota device is not listed below, choose a **Generic** device that is similar to your Tasmota device.
 
