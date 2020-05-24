@@ -9,7 +9,15 @@ Tasmota (Connect) is a SmartApp & Device Type for [Samsung SmartThings](https://
 
 ## Requirement
 * Samsung SmartThings Hub
-* Tasmota >=8.10 (recommended)
+* Official [Tasmota](https://github.com/arendst/Tasmota/releases) Firmware >=8.10
+
+#### Tasmota Firmware
+
+Firmware | Description
+---- | ----
+**tasmota.bin** | The Tasmota version with most drivers. **RECOMMENDED RELEASE BINARY**
+**tasmota-sensors.bin** | The Sensors version adds more useful sensors.
+**tasmota-ir** | The InfraRed Receiver and transmitter version allowing all available protocols provided by library IRremoteESP8266 but without most other features.
 
 ## Installation
 
