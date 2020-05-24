@@ -35,7 +35,6 @@ metadata {
         capability "Color Control"
         capability "Color Temperature"
         capability "Refresh"
-        capability "Configuration"
         capability "Signal Strength"
 
         attribute "colorName", "string"
