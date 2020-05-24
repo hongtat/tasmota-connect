@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.5" }
+String appVersion() { return "1.0.6" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -65,8 +65,8 @@ def mainPage() {
                         defaultValue: "MM/dd/yyyy h:mm",
                         required: false, submitOnChange: false)
                 input("frequency", "enum",
-                        title: "Auto Poll Device",
-                        description: "Auto poll device status every so often",
+                        title: "Device Health Check",
+                        description: "Check in on device health every so often",
                         options: ["Every 1 minute", "Every 5 minutes", "Every 10 minutes", "Every 15 minutes", "Every 30 minutes", "Every 1 hour"],
                         defaultValue: "Every 5 minutes",
                         required: false, submitOnChange: false)
@@ -511,7 +511,9 @@ def moduleMap() {
         "1007": [name: "Generic Metering Switch (2ch)", type: "Tasmota Metering Switch", channel: 2],
         "1008": [name: "Generic Dimmer Switch", type: "Tasmota Dimmer Switch"],
         "1010": [name: "Generic IR Bridge", type: "Tasmota IR Bridge"],
-        //"1011": [name: "Generic RGBW Light", type: "Tasmota RGBW Light"],
+        "1011": [name: "Generic Light (RGBW)", type: "Tasmota RGBW Light"],
+        "1012": [name: "Generic Light (RGB)", type: "Tasmota RGB Light"],
+        "1013": [name: "Generic Light (CCT)", type: "Tasmota CCT Light"],
         "1100": [name: "Virtual Switch", type: "Tasmota Virtual Switch"],
         "1101": [name: "Virtual Shade/Blind", type: "Tasmota Virtual Shade"],
         "1111": [name: "Virtual 1-button", type: "Tasmota Virtual 1 Button"],
@@ -525,7 +527,9 @@ def moduleMap() {
          "Tasmota Generic Switch":          [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
          "Tasmota Metering Switch":         [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
          "Tasmota Dimmer Switch":           [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-         //"Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+         "Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+         "Tasmota RGB Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+         "Tasmota CCT Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
          "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
          "Tasmota RF Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
          "Tasmota IR Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],

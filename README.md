@@ -63,6 +63,9 @@ If your Tasmota device is not listed below, choose a **Generic** device that is 
 * **Generic Metering Switch** (1,2CH) - Power Monitoring
 * **Generic Dimmer Switch**
 * **Generic IR Bridge**
+* **Generic Light (CT)**
+* **Generic Light (RGB)**
+* **Generic Light (RGBW)**
 * Sonoff Basic
 * Sonoff RF
 * Sonoff TH
