@@ -38,6 +38,10 @@ Firmware | Description
 8. Add Tasmota (Connect) SmartApp
    * (New) Go to: `SmartApps` > `+` > `My SmartApps` > `Tasmota (Connect)`
    * (Classic) Go to: `Automation` > `SmartApps` > `Add a SmartApp` > `My Apps` > `Tasmota (Connect)`
+9. For SmartApp and Device Handler updates,
+   1. Sign in to SmartThings IDE: https://account.smartthings.com/login
+   2. Under `My SmartApps` > `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
+   3. Under `My Device Handlers` > `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
 
 #### Manual Installation
 For Tasmota (Connect) to function correctly, please make sure you install the SmartApp and all Device Handlers.
