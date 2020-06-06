@@ -1,6 +1,8 @@
 ## Tasmota (Connect)
 Tasmota (Connect) is a SmartApp & Device Type for [Samsung SmartThings](https://www.smartthings.com/), that allows you to add your [Tasmota](https://github.com/arendst/Tasmota) devices as SmartThings devices.
 
+See [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback, questions and troubleshooting.
+
 ## Features
 * Full support for [SmartThings (new) App](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect) & [SmartThings (Classic) App](https://play.google.com/store/apps/details?id=com.smartthings.android) 
 * Real-time device status
@@ -136,7 +138,7 @@ Virtual Motion Sensor   | Add a RF motion sensor
 * Ensure your Tasmota devices and SmartThings hub are assigned with static IP addresses.
 
 ####  Where can I find out more about Tasmota command for sending/receiving IR / RF codes?
-Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/#/Commands
+Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/Commands/
 
 #### I have feedback, questions, suggestion..
 Please use [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback and questions.
