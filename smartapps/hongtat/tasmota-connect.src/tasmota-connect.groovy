@@ -16,11 +16,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.6" }
+String appVersion() { return "1.0.6a" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import groovy.transform.Field
+
 definition(
     name: "Tasmota (Connect)",
     namespace: "hongtat",
@@ -111,7 +112,7 @@ def configureDevice(params){
                         description: "Username",
                         defaultValue: "",
                         required: false, submitOnChange: true)
-                input("dev:${state.currentId}:password", "text",
+                input("dev:${state.currentId}:password", "password",
                         title: "Password",
                         description: "Password",
                         defaultValue: "",
@@ -349,7 +350,7 @@ def addDeviceConfirm() {
                     paragraph "Please follow these steps:", required: true
                     paragraph "1. Sign in to your SmartThings IDE.", required: true
                     paragraph "2. Under 'My Device Handlers' > click 'Settings' > 'Add new repository' > enter the following", required: true
-                    paragraph "   Owner: hongtat, Name: tasmota-connect, Branch: Master", required: true
+                    paragraph "   Owner: hongtat, Name: tasmota-connect, Branch: master", required: true
                     paragraph "3. Under 'Update from Repo' > click 'tasmota-connect' > Select all files > Tick 'Publish' > then 'Execute Update'", required: true
                     paragraph "Error message: ${(e as String).split(":")[1]}.", required: true
                 }
@@ -419,8 +420,8 @@ def callTasmota(childDevice, command) {
         def hubAction = new physicalgraph.device.HubAction(
             method: "POST",
             headers: [HOST: childSetting(childDevice.device.id, "ip") + ":80"],
-            path: "/cm?user=" + (childSetting(childDevice.device.id, "username") ?: "") + "&password=" + (childSetting(childDevice.device.id, "password") ?: "") + "&cmnd=" + command.replace('%','%25').replace(' ', '%20').replace("#","%23").replace(';', '%3B'),
-            null,
+            path: "/cm" + "?cmnd=" + java.net.URLEncoder.encode(command,"UTF-8")
+            + "&user=" + (childSetting(childDevice.device.id, "username") ?: "") + "&password=" + (java.net.URLEncoder.encode(childSetting(childDevice.device.id, "password"), "UTF-8") ?: "") , null,
             [callback: "calledBackHandler"]
         )
         log.debug "${childDevice.device.displayName} (" + childSetting(childDevice.device.id, "ip") + ") called: " + command

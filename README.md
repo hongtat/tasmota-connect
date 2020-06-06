@@ -27,12 +27,12 @@ Firmware | Description
 3. Under `My SmartApps` > click `Settings` > `Add new repository` > enter the following:
    * Owner: **hongtat**
    * Name: **tasmota-connect**
-   * Branch: **Master**
+   * Branch: **master**
 4. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
 5. Under `My Device Handlers` > click `Settings` > `Add new repository` > enter the following:
    * Owner: **hongtat**
    * Name: **tasmota-connect**
-   * Branch: **Master**
+   * Branch: **master**
 6. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
 7. Open your SmartThings mobile app
 8. Add Tasmota (Connect) SmartApp
