@@ -17,6 +17,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import groovy.json.JsonOutput
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 metadata {
     definition (name: "Tasmota IR Bridge", namespace: "hongtat", author: "HongTat Tan") {
         capability "Notification"
@@ -28,6 +32,7 @@ metadata {
         attribute "lastEvent", "string"
         attribute "lastSeen", "string"
         attribute "version", "string"
+        attribute "supportedVendor", "string"
 
         command "refresh"
         command "irSend"
@@ -94,7 +99,9 @@ def initialize() {
     } catch (all) { }
 
     parent.callTasmota(this, "Status 5")
-    parent.callTasmota(this, "Backlog Rule1 ON IrReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"IrReceived\":{\"Data\":\"%value%\"}} ENDON;Rule1 1")
+    parent.callTasmota(this, "Backlog Rule1 ON IrReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"IrReceived\":{\"Data\":\"%value%\"}} ENDON ON IrReceived#RawData DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"IrReceived\":{\"RawData\":\"%value%\"}} ENDON;Rule1 1")
+    parent.callTasmota(this, 'irhvac {"Vendor":"x"}')
+    // parent.callTasmota(this, 'irsend {"Protocol":"x"}')
     refresh()
 }
 
@@ -138,6 +145,19 @@ def parseEvents(status, json) {
                 events << sendEvent(name: "lastEvent", value: now, isStateChange:true, displayed:false)
                 log.debug "IrReceived#Data: '${irData}'"
             }
+        }
+
+        // Ir HVAC Vendor
+        if (json?.IRHVAC != null) {
+            def vendor = []
+            def pattern = /^Wrong\s*Vendor\s*\((.+)\)$/
+            def vendorStr = (json.IRHVAC ==~ pattern) ? (json.IRHVAC =~ pattern)[0][1] : null
+            if (vendorStr != null && vendorStr.contains('|')) {
+                vendor = vendorStr.tokenize('|')
+                vendor.sort()
+                events << sendEvent(name: "supportedVendor", value: JsonOutput.toJson(vendor), isStateChange:true, displayed:false)
+            }
+            log.debug "HVAC vendor: '${vendor}'"
         }
 
         // MAC
