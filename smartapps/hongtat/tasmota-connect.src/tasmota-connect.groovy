@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.6" }
+String appVersion() { return "1.0.7" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -51,7 +51,18 @@ def mainPage() {
                 getChildDevices().sort({ a, b -> a.label <=> b.label }).each {
                     def typeName = it.typeName
                     if (moduleMap().find{ it.value.type == "${typeName}" }?.value?.settings?.contains('ip')) {
-                        href "configureDevice", title:"$it.label", description: (childSetting(it.id, "ip") ?: "Tap to set IP address"), params: [did: it.deviceNetworkId]
+                        def actualDni = it.deviceNetworkId
+                        def descText = ""
+                        if (childSetting(it.id, "ip") != null) {
+                            def dni = it.state?.dni
+                            descText = childSetting(it.id, "ip")
+                            if ((dni != null && dni != actualDni) || (dni == null)) {
+                                descText += ' (!!!)'
+                            }
+                        } else {
+                            descText = "Tap to set IP address"
+                        }
+                        href "configureDevice", title:"$it.label", description: descText, params: [did: actualDni]
                     } else {
                         href "configureDevice", title:"$it.label", description: "", params: [did: it.deviceNetworkId]
                     }
@@ -247,6 +258,46 @@ def configureDevice(params){
                         defaultValue: "0", required: false)
             }
         }
+        // Virtual Air Con
+        if (moduleParameter && moduleParameter.settings.contains('virtualAircon') && childSetting(state.currentId, "bridge") != null) {
+            def irBridge = getChildDevices().find { it.id == childSetting(state.currentId, "bridge") }?: null
+            def supportedVendor = irBridge?.currentSupportedVendor
+
+            if (irBridge != null && supportedVendor != null) {
+                def vendor = new JsonSlurper().parseText(supportedVendor)
+                if (vendor != null && vendor.size() > 0) {
+                    section("Air Conditioner brand") {
+                        input ("dev:${state.currentId}:hvac", "enum",
+                            title: "Select air conditioner brand",
+                            description: "Select air conditioner brand",
+                            multiple: false, required: false, options: vendor, submitOnChange: true)
+                    }
+                } else {
+                    deleteChildSetting(state.currentId, "hvac")
+                    section("Air Conditioner brand") {
+                        paragraph "Please select an IR Bridge with \"tasmota-ir\" firmware. This firmware has all the available IR protocols."
+                    }
+                }
+            } else {
+                deleteChildSetting(state.currentId, "hvac")
+                section("Air Conditioner brand") {
+                    paragraph "Please select an IR Bridge with \"tasmota-ir\" firmware. This firmware has all the available IR protocols."
+                }
+            }
+        }
+
+        // Potential Problem
+        if (moduleParameter && moduleParameter.settings.contains('ip')) {
+            def dc = getChildDevice(state.currentDeviceId)
+            def dni = dc.state?.dni
+            def actualDni = dc.deviceNetworkId
+            if ((dni != null && dni != actualDni)) {
+                section("Potential Problem Detected") {
+                    paragraph "It appears that this device is either offline or there is another device using the same IP address or Device Network ID."
+                }
+            }
+        }
+
         section("DANGER ZONE", hideable: true, hidden: true) {
             href "deleteDeviceConfirm", title:"DELETE $state.currentDisplayName", description: "Tap here to delete this device."
         }
@@ -349,7 +400,7 @@ def addDeviceConfirm() {
                     paragraph "Please follow these steps:", required: true
                     paragraph "1. Sign in to your SmartThings IDE.", required: true
                     paragraph "2. Under 'My Device Handlers' > click 'Settings' > 'Add new repository' > enter the following", required: true
-                    paragraph "   Owner: hongtat, Name: tasmota-connect, Branch: Master", required: true
+                    paragraph "   Owner: hongtat, Name: tasmota-connect, Branch: master", required: true
                     paragraph "3. Under 'Update from Repo' > click 'tasmota-connect' > Select all files > Tick 'Publish' > then 'Execute Update'", required: true
                     paragraph "Error message: ${(e as String).split(":")[1]}.", required: true
                 }
@@ -419,7 +470,7 @@ def callTasmota(childDevice, command) {
         def hubAction = new physicalgraph.device.HubAction(
             method: "POST",
             headers: [HOST: childSetting(childDevice.device.id, "ip") + ":80"],
-            path: "/cm?user=" + (childSetting(childDevice.device.id, "username") ?: "") + "&password=" + (childSetting(childDevice.device.id, "password") ?: "") + "&cmnd=" + command.replace('%','%25').replace(' ', '%20').replace("#","%23").replace(';', '%3B'),
+            path: "/cm?user=" + (childSetting(childDevice.device.id, "username") ?: "") + "&password=" + (childSetting(childDevice.device.id, "password") ? URLEncoder.encode(childSetting(childDevice.device.id, "password")) : "") + "&cmnd=" + URLEncoder.encode(command),
             null,
             [callback: "calledBackHandler"]
         )
@@ -507,15 +558,17 @@ def moduleMap() {
         "1003": [name: "Generic Switch (4ch)", type: "Tasmota Generic Switch", channel: 4],
         "1004": [name: "Generic Switch (5ch)", type: "Tasmota Generic Switch", channel: 5],
         "1005": [name: "Generic Switch (6ch)", type: "Tasmota Generic Switch", channel: 6],
-        "1006": [name: "Generic Metering Switch (1ch)", type: "Tasmota Metering Switch"],
-        "1007": [name: "Generic Metering Switch (2ch)", type: "Tasmota Metering Switch", channel: 2],
-        "1008": [name: "Generic Dimmer Switch", type: "Tasmota Dimmer Switch"],
-        "1009": [name: "Generic Metering Switch (3ch)", type: "Tasmota Metering Switch", channel: 3],
-        "1010": [name: "Generic IR Bridge", type: "Tasmota IR Bridge"],
-        "1011": [name: "Generic Light (RGBW)", type: "Tasmota RGBW Light"],
-        "1012": [name: "Generic Light (RGB)", type: "Tasmota RGB Light"],
-        "1013": [name: "Generic Light (CCT)", type: "Tasmota CCT Light"],
-        "1014": [name: "Generic Metering Switch (4ch)", type: "Tasmota Metering Switch", channel: 4],
+        "1010": [name: "Generic Metering Switch (1ch)", type: "Tasmota Metering Switch"],
+        "1011": [name: "Generic Metering Switch (2ch)", type: "Tasmota Metering Switch", channel: 2],
+        "1012": [name: "Generic Metering Switch (3ch)", type: "Tasmota Metering Switch", channel: 3],
+        "1013": [name: "Generic Metering Switch (4ch)", type: "Tasmota Metering Switch", channel: 4],
+        "1014": [name: "Generic Metering Switch (5ch)", type: "Tasmota Metering Switch", channel: 5],
+        "1015": [name: "Generic Metering Switch (6ch)", type: "Tasmota Metering Switch", channel: 6],
+        "1020": [name: "Generic Dimmer Switch", type: "Tasmota Dimmer Switch"],
+        "1021": [name: "Generic IR Bridge", type: "Tasmota IR Bridge"],
+        "1022": [name: "Generic Light (RGBW)", type: "Tasmota RGBW Light"],
+        "1023": [name: "Generic Light (RGB)", type: "Tasmota RGB Light"],
+        "1024": [name: "Generic Light (CCT)", type: "Tasmota CCT Light"],
         "1100": [name: "Virtual Switch", type: "Tasmota Virtual Switch"],
         "1101": [name: "Virtual Shade/Blind", type: "Tasmota Virtual Shade"],
         "1111": [name: "Virtual 1-button", type: "Tasmota Virtual 1 Button"],
@@ -523,26 +576,28 @@ def moduleMap() {
         "1114": [name: "Virtual 4-button", type: "Tasmota Virtual 4 Button"],
         "1116": [name: "Virtual 6-button", type: "Tasmota Virtual 6 Button"],
         "1117": [name: "Virtual Contact Sensor", type: "Tasmota Virtual Contact Sensor"],
-        "1118": [name: "Virtual Motion Sensor", type: "Tasmota Virtual Motion Sensor"]
+        "1118": [name: "Virtual Motion Sensor", type: "Tasmota Virtual Motion Sensor"],
+        "1119": [name: "Virtual Air Conditioner", type: "Tasmota Virtual Air Conditioner"]
     ]
     def defaultModule = [
-         "Tasmota Generic Switch":          [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
-         "Tasmota Metering Switch":         [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
-         "Tasmota Dimmer Switch":           [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-         "Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-         "Tasmota RGB Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-         "Tasmota CCT Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-         "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
-         "Tasmota RF Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
-         "Tasmota IR Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
-         "Tasmota Virtual Contact Sensor":  [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualContactSensor", "bridge"]],
-         "Tasmota Virtual Motion Sensor":   [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualMotionSensor", "bridge"]],
-         "Tasmota Virtual Switch":          [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualSwitch", "bridge"]],
-         "Tasmota Virtual Shade":           [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualShade", "bridge"]],
-         "Tasmota Virtual 1 Button":        [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
-         "Tasmota Virtual 2 Button":        [channel: 2, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
-         "Tasmota Virtual 4 Button":        [channel: 4, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
-         "Tasmota Virtual 6 Button":        [channel: 6, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]]
+        "Tasmota Generic Switch":          [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
+        "Tasmota Metering Switch":         [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
+        "Tasmota Dimmer Switch":           [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+        "Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+        "Tasmota RGB Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+        "Tasmota CCT Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
+        "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
+        "Tasmota RF Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
+        "Tasmota IR Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
+        "Tasmota Virtual Contact Sensor":  [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualContactSensor", "bridge"]],
+        "Tasmota Virtual Motion Sensor":   [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualMotionSensor", "bridge"]],
+        "Tasmota Virtual Switch":          [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualSwitch", "bridge"]],
+        "Tasmota Virtual Shade":           [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualShade", "bridge"]],
+        "Tasmota Virtual 1 Button":        [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
+        "Tasmota Virtual 2 Button":        [channel: 2, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
+        "Tasmota Virtual 4 Button":        [channel: 4, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
+        "Tasmota Virtual 6 Button":        [channel: 6, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
+        "Tasmota Virtual Air Conditioner": [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualAircon", "bridge"]]
     ]
     def modules = [:]
     customModule.each { k,v ->
@@ -611,7 +666,7 @@ def deleteChildSetting(id, name=null) {
         }
     } else if (id && name==null) {
         // otherwise, delete everything
-        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive"].each { n ->
+        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive", "hvac"].each { n ->
             app?.deleteSetting("dev:${id}:${n}" as String)
         }
         // button

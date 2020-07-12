@@ -19,7 +19,7 @@ Firmware | Description
 ---- | ----
 **tasmota.bin** | The Tasmota version with most drivers. **RECOMMENDED RELEASE BINARY**
 **tasmota-sensors.bin** | The Sensors version adds more useful sensors.
-**tasmota-ir** | The InfraRed Receiver and transmitter version allowing all available protocols provided by library IRremoteESP8266 but without most other features.
+**tasmota-ir** | The InfraRed Receiver and transmitter version allowing all available protocols provided by library IRremoteESP8266 but without most other features. **RECOMMENDED firmware for IR Bridge**
 
 ## Installation
 
@@ -29,12 +29,12 @@ Firmware | Description
 3. Under `My SmartApps` > click `Settings` > `Add new repository` > enter the following:
    * Owner: **hongtat**
    * Name: **tasmota-connect**
-   * Branch: **Master**
+   * Branch: **master**
 4. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
 5. Under `My Device Handlers` > click `Settings` > `Add new repository` > enter the following:
    * Owner: **hongtat**
    * Name: **tasmota-connect**
-   * Branch: **Master**
+   * Branch: **master**
 6. Under `Update from Repo` > click `tasmota-connect` > Select all files > Tick `Publish` > then `Execute Update`
 7. Open your SmartThings mobile app
 8. Add Tasmota (Connect) SmartApp
@@ -102,7 +102,8 @@ Virtual Shade           | Add a SmartThings shade/blind that can be controlled b
 Virtual Button          | Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
 Virtual Contact Sensor  | Add a RF contact sensor
 Virtual Motion Sensor   | Add a RF motion sensor
-  
+Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands))
+
 #### Configuring a Virtual Switch
 1. Choose a RF or IR Bridge
 2. Enter the Tasmota command to send for "ON" and "OFF"
@@ -139,6 +140,12 @@ Virtual Motion Sensor   | Add a RF motion sensor
 
 ####  Where can I find out more about Tasmota command for sending/receiving IR / RF codes?
 Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/Commands/
+
+#### The Tasmota (Connect) SmartApp is not showing up in SmartThings App?
+* Sign in to SmartThings IDE: https://account.smartthings.com/login 
+* Verify that you have installed the codes in the correct SmartThings IDE Shard.
+* If you don't see your current devices under "My Devices", you are probably on the wrong shard.
+
 
 #### I have feedback, questions, suggestion..
 Please use [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback and questions.
