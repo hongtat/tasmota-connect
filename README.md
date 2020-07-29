@@ -23,6 +23,8 @@ Firmware | Description
 
 ## Installation
 
+Follow the instruction below, and update the SmartApp and Device Handlers codes regularly to receive the latest features.
+
 #### GitHub Install
 1. If you haven’t enabled GitHub integration, please visit here for [instructions](https://docs.smartthings.com/en/latest/tools-and-ide/github-integration.html).
 2. Sign in to SmartThings IDE: https://account.smartthings.com/login
@@ -74,7 +76,7 @@ It should work for most switches, lights (CCT, RGB, RGBW), dimmers, relays, plug
 If your Tasmota device is not listed below, choose a **Generic** device that is similar to your Tasmota device.
 
 * **Generic Switch** (1,2,3,4,5,6CH) - No Power Monitoring
-* **Generic Metering Switch** (1,2CH) - Power Monitoring
+* **Generic Metering Switch** (1,2,3,4,5,6CH) - Power Monitoring
 * **Generic Dimmer Switch**
 * **Generic IR Bridge**
 * **Generic Light (CT)**
@@ -129,6 +131,9 @@ Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor
    
    * "RfReceived":{"Sync":7110,"Low":210,"High":660,"Data":"**70C70F**","RfKey":"None"}
 
+#### Configuring a Virtual Air Conditioner
+1. Choose an IR Bridge
+2. Select air conditioner brand ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands))
 
 ## FAQ
 
@@ -145,6 +150,9 @@ Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/Commands
 * Sign in to SmartThings IDE: https://account.smartthings.com/login 
 * Verify that you have installed the codes in the correct SmartThings IDE Shard.
 * If you don't see your current devices under "My Devices", you are probably on the wrong shard.
+
+#### I'm unable to find the recently released features (or missing features or devices) in my SmartApp?
+* Please update your code.
 
 
 #### I have feedback, questions, suggestion..
