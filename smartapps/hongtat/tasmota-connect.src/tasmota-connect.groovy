@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.7" }
+String appVersion() { return "1.0.7a" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -558,12 +558,16 @@ def moduleMap() {
         "1003": [name: "Generic Switch (4ch)", type: "Tasmota Generic Switch", channel: 4],
         "1004": [name: "Generic Switch (5ch)", type: "Tasmota Generic Switch", channel: 5],
         "1005": [name: "Generic Switch (6ch)", type: "Tasmota Generic Switch", channel: 6],
+        "1006": [name: "Generic Switch (7ch)", type: "Tasmota Generic Switch", channel: 7],
+        "1007": [name: "Generic Switch (8ch)", type: "Tasmota Generic Switch", channel: 8],
         "1010": [name: "Generic Metering Switch (1ch)", type: "Tasmota Metering Switch"],
         "1011": [name: "Generic Metering Switch (2ch)", type: "Tasmota Metering Switch", channel: 2],
         "1012": [name: "Generic Metering Switch (3ch)", type: "Tasmota Metering Switch", channel: 3],
         "1013": [name: "Generic Metering Switch (4ch)", type: "Tasmota Metering Switch", channel: 4],
         "1014": [name: "Generic Metering Switch (5ch)", type: "Tasmota Metering Switch", channel: 5],
         "1015": [name: "Generic Metering Switch (6ch)", type: "Tasmota Metering Switch", channel: 6],
+        "1016": [name: "Generic Metering Switch (7ch)", type: "Tasmota Metering Switch", channel: 7],
+        "1017": [name: "Generic Metering Switch (8ch)", type: "Tasmota Metering Switch", channel: 8],
         "1020": [name: "Generic Dimmer Switch", type: "Tasmota Dimmer Switch"],
         "1021": [name: "Generic IR Bridge", type: "Tasmota IR Bridge"],
         "1022": [name: "Generic Light (RGBW)", type: "Tasmota RGBW Light"],
