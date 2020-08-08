@@ -75,8 +75,8 @@ It should work for most switches, lights (CCT, RGB, RGBW), dimmers, relays, plug
 
 If your Tasmota device is not listed below, choose a **Generic** device that is similar to your Tasmota device.
 
-* **Generic Switch** (1,2,3,4,5,6CH) - No Power Monitoring
-* **Generic Metering Switch** (1,2,3,4,5,6CH) - Power Monitoring
+* **Generic Switch** (1,2,3,4,5,6,7,8CH) - No Power Monitoring
+* **Generic Metering Switch** (1,2,3,4,5,6,7,8CH) - Power Monitoring
 * **Generic Dimmer Switch**
 * **Generic IR Bridge**
 * **Generic Light (CT)**
