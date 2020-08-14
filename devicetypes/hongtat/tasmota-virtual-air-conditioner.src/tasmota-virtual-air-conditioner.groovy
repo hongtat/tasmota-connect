@@ -259,8 +259,17 @@ def done() {
         if (getTemperatureScale() == "F") {
             command.Celsius = 'Off'
         }
-        log.debug "Command: " + JsonOutput.toJson(command)
-        parent.callTasmota(bridge, 'IRhvac ' + JsonOutput.toJson(command))
+        if (power == "off") {
+            log.debug "Command 1: " + JsonOutput.toJson(command)
+            parent.callTasmota(bridge, 'IRhvac ' + JsonOutput.toJson(command))
+
+            command.Mode = "off"
+            log.debug "Command 2: " + JsonOutput.toJson(command)
+            parent.callTasmota(bridge, 'IRhvac ' + JsonOutput.toJson(command))
+        } else {
+            log.debug "Command: " + JsonOutput.toJson(command)
+            parent.callTasmota(bridge, 'IRhvac ' + JsonOutput.toJson(command))
+        }
     } else {
         log.debug "Error: Please specify an IR bridge and air conditioner brand"
     }
