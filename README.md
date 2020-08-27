@@ -152,8 +152,10 @@ Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/Commands
 * If you don't see your current devices under "My Devices", you are probably on the wrong shard.
 
 #### I'm unable to find the recently released features (or missing features or devices) in my SmartApp?
-* Please update your code.
+* Please make sure you install the SmartApp and all Device Handlers, and update the codes regularly to receive the latest features
 
+#### I created a generic/metering switch with 2 (or more) channels, but it shows only 1 switch?
+* Please make sure you install the SmartApp and all Device Handlers, and update the codes regularly to receive the latest features
 
 #### I have feedback, questions, suggestion..
 Please use [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback and questions.

@@ -18,7 +18,7 @@
  */
 
 metadata {
-    definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan") {
+    definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "c6fa24a3-26c5-3e1a-ba41-5d3bcd4fc368", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
         capability "Switch"
         capability "Fan Speed"
@@ -155,7 +155,7 @@ def parseEvents(status, json) {
             }
             def value = (rawLevel ? "on" : "off")
             events << sendEvent(name: "switch", value: value)
-            events << sendEvent(name: "level", value: rawLevel)
+            events << sendEvent(name: "level", value: rawLevel, displayed: false)
             events << sendEvent(name: "fanSpeed", value: fanSpeed)
             log.debug "Fan switch: '" + value + "', level: '${rawLevel}', fanSpeed: '${fanSpeed}'"
         }
@@ -250,6 +250,8 @@ def setFanSpeed(speed) {
     } else if (speed as Integer == 2) {
         medium()
     } else if (speed as Integer == 3) {
+        high()
+    } else if (speed as Integer == 4) {
         high()
     }
 }

@@ -19,7 +19,7 @@
 
 import groovy.json.JsonOutput
 metadata {
-    definition (name: "Tasmota Virtual Air Conditioner", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.airconditioner", "vid": "ff0a15cd-13dd-32c2-b51c-780bb3aad494", mnmn: "SmartThingsCommunity") {
+    definition (name: "Tasmota Virtual Air Conditioner", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.airconditioner", vid: "ff0a15cd-13dd-32c2-b51c-780bb3aad494", mnmn: "SmartThingsCommunity") {
         capability "Actuator"
         capability "Temperature Measurement"
         capability "Thermostat Cooling Setpoint"
