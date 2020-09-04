@@ -18,11 +18,14 @@
  */
 
 metadata {
-    definition (name: "Tasmota RF Bridge", namespace: "hongtat", author: "HongTat Tan") {
+    definition (name: "Tasmota RF Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
         capability "Refresh"
         capability "Health Check"
         capability "Signal Strength"
+        capability "voicehouse43588.lastEvent"
+        capability "voicehouse43588.lastReceived"
+        capability "voicehouse43588.deviceStatus"
 
         attribute "rfKey", "number"
         attribute "rfData", "string"
@@ -99,6 +102,7 @@ def initialize() {
 
     parent.callTasmota(this, "Status 5")
     parent.callTasmota(this, "Backlog Rule1 ON RfReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"Data\":\"%value%\"}} ENDON ON RfReceived#RfKey DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"RfKey\":\"%value%\"}} ENDON;Rule1 1")
+    //parent.callTasmota(this, "Backlog Rule2 ON RfRaw#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfRaw\":{\"Data\":\"%value%\"}} ENDON;Rule2 1")
     refresh()
 }
 
@@ -139,15 +143,15 @@ def parseEvents(status, json) {
             if (json?.RfReceived?.Data != null && json?.RfReceived?.Data.toUpperCase() != 'NONE') {
                 rfData = json.RfReceived.Data.toUpperCase()
                 message.rfData = rfData
-                events << sendEvent(name: "rfData", value: rfData, isStateChange:true, displayed:true)
-                events << sendEvent(name: "lastEvent", value: now, isStateChange:true, displayed:false)
+                events << sendEvent(name: "rfData", value: rfData, isStateChange: true, displayed: false)
+                events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
+                events << sendEvent(name: "lastReceived", value: rfData, isStateChange: true)
                 log.debug "RfReceived#Data: '${rfData}'"
             }
             if (json?.RfReceived?.RfKey != null && json?.RfReceived?.RfKey != 'NONE') {
                 rfKey = json.RfReceived.RfKey
                 message.rfKey = rfKey
-                events << sendEvent(name: "rfKey", value: rfKey, isStateChange:true, displayed:true)
-                events << sendEvent(name: "lastEvent", value: now, isStateChange:true, displayed:false)
+                events << sendEvent(name: "rfKey", value: rfKey, isStateChange:true, displayed: false)
                 log.debug "RfReceived#RfKey: '${rfKey}'"
             }
         }

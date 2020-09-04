@@ -22,11 +22,14 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 metadata {
-    definition (name: "Tasmota IR Bridge", namespace: "hongtat", author: "HongTat Tan") {
+    definition (name: "Tasmota IR Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
         capability "Refresh"
         capability "Health Check"
         capability "Signal Strength"
+        capability "voicehouse43588.lastEvent"
+        capability "voicehouse43588.lastReceived"
+        capability "voicehouse43588.deviceStatus"
 
         attribute "irData", "string"
         attribute "lastEvent", "string"
@@ -141,8 +144,9 @@ def parseEvents(status, json) {
             if (json?.IrReceived?.Data != null && json?.IrReceived?.Data.toUpperCase() != 'NONE') {
                 irData = json.IrReceived.Data.toUpperCase()
                 message.irData = irData
-                events << sendEvent(name: "irData", value: irData, isStateChange:true, displayed:true)
-                events << sendEvent(name: "lastEvent", value: now, isStateChange:true, displayed:false)
+                events << sendEvent(name: "irData", value: irData, isStateChange: true, displayed: false)
+                events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
+                events << sendEvent(name: "lastReceived", value: irData, isStateChange: true)
                 log.debug "IrReceived#Data: '${irData}'"
             }
         }
