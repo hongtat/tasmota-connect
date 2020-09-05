@@ -18,7 +18,7 @@
  */
 
 metadata {
-    definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "c6fa24a3-26c5-3e1a-ba41-5d3bcd4fc368", mnmn: "SmartThingsCommunity") {
+    definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "beea8e9c-c35a-3f86-8be5-41113a35a700", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
         capability "Switch"
         capability "Fan Speed"
