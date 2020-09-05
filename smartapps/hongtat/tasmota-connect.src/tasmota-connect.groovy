@@ -638,6 +638,19 @@ def generalSetting(String name) {
 }
 
 /**
+ * Health Check - online/offline
+ * @return Integer
+ */
+def checkInterval() {
+    def interval = ((generalSetting("frequency") ?: 'Every 1 minute').replace('Every ', '').replace(' minutes', '').replace(' minute', '').replace('1 hour', '60')) as Integer
+    if (interval < 15) {
+        return (interval * 2 * 60 + 1 * 60)
+    } else {
+        return (30 * 60 + 2 * 60)
+    }
+}
+
+/**
  * Get child setting - this is stored in SmartApp
  * @param id String device ID
  * @param name String | List

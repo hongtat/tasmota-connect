@@ -99,6 +99,7 @@ def initialize() {
     try {
         "run$syncFrequency"(refresh)
     } catch (all) { }
+    sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
     parent.callTasmota(this, "Backlog Rule1 ON RfReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"Data\":\"%value%\"}} ENDON ON RfReceived#RfKey DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"RfKey\":\"%value%\"}} ENDON;Rule1 1")
@@ -143,15 +144,15 @@ def parseEvents(status, json) {
             if (json?.RfReceived?.Data != null && json?.RfReceived?.Data.toUpperCase() != 'NONE') {
                 rfData = json.RfReceived.Data.toUpperCase()
                 message.rfData = rfData
-                events << sendEvent(name: "rfData", value: rfData, isStateChange: true, displayed: false)
+                events << sendEvent(name: "rfData", value: rfData as String, isStateChange: true, displayed: false)
                 events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
-                events << sendEvent(name: "lastReceived", value: rfData, isStateChange: true)
+                events << sendEvent(name: "lastReceived", value: rfData as String, isStateChange: true)
                 log.debug "RfReceived#Data: '${rfData}'"
             }
             if (json?.RfReceived?.RfKey != null && json?.RfReceived?.RfKey != 'NONE') {
                 rfKey = json.RfReceived.RfKey
                 message.rfKey = rfKey
-                events << sendEvent(name: "rfKey", value: rfKey, isStateChange:true, displayed: false)
+                events << sendEvent(name: "rfKey", value: rfKey as String, isStateChange:true, displayed: false)
                 log.debug "RfReceived#RfKey: '${rfKey}'"
             }
         }

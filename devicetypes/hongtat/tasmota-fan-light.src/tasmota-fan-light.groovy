@@ -108,6 +108,7 @@ def initialize() {
     try {
         "run$syncFrequency"(refresh)
     } catch (all) { }
+    sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
     parent.callTasmota(this, "Backlog Rule1 ON FanSpeed#data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"FanSpeed\":\"%value%\"}} ENDON ON Power1#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"POWER1\":\"%value%\"}} ENDON;Rule1 1")

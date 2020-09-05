@@ -100,6 +100,7 @@ def initialize() {
     try {
         "run$syncFrequency"(refresh)
     } catch (all) { }
+    sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
     parent.callTasmota(this, "Backlog Rule1 ON IrReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"IrReceived\":{\"Data\":\"%value%\"}} ENDON ON IrReceived#RawData DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"IrReceived\":{\"RawData\":\"%value%\"}} ENDON;Rule1 1")
@@ -144,9 +145,9 @@ def parseEvents(status, json) {
             if (json?.IrReceived?.Data != null && json?.IrReceived?.Data.toUpperCase() != 'NONE') {
                 irData = json.IrReceived.Data.toUpperCase()
                 message.irData = irData
-                events << sendEvent(name: "irData", value: irData, isStateChange: true, displayed: false)
+                events << sendEvent(name: "irData", value: irData as String, isStateChange: true, displayed: false)
                 events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
-                events << sendEvent(name: "lastReceived", value: irData, isStateChange: true)
+                events << sendEvent(name: "lastReceived", value: irData as String, isStateChange: true)
                 log.debug "IrReceived#Data: '${irData}'"
             }
         }
