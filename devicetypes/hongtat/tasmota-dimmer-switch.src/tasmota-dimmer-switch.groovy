@@ -18,7 +18,7 @@
  */
 
 metadata {
-    definition(name: "Tasmota Dimmer Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light") {
+    definition(name: "Tasmota Dimmer Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "63ddbf2c-9f14-37b5-bcbc-16020731aca7", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
         capability "Actuator"
         capability "Health Check"
