@@ -24,7 +24,7 @@ import groovy.transform.Field
 @Field final Integer  COLOR_TEMP_DEFAULT = COLOR_TEMP_RANGE.getFrom() + ((COLOR_TEMP_RANGE.getTo() - COLOR_TEMP_RANGE.getFrom())/2)
 
 metadata {
-    definition (name: "Tasmota CCT Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light") {
+    definition (name: "Tasmota CCT Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "63ddbf2c-9f14-37b5-bcbc-16020731aca7", mnmn: "SmartThingsCommunity") {
         capability "Health Check"
         capability "Actuator"
         capability "Sensor"

@@ -22,7 +22,7 @@ import groovy.transform.Field
 @Field final IntRange PERCENT_RANGE = (0..100)
 
 metadata {
-    definition (name: "Tasmota RGB Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light") {
+    definition (name: "Tasmota RGB Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "353ddcba-2bd6-3cfe-9570-ea94be3957ca", mnmn: "SmartThingsCommunity") {
         capability "Health Check"
         capability "Actuator"
         capability "Sensor"
