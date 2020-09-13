@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition(name: "Tasmota Metering Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.switch", vid: "2a6535f1-a4da-3946-94eb-989c75a805b7", mnmn: "SmartThingsCommunity") {
         capability "Energy Meter"
@@ -48,6 +49,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota Metering Switch v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 

@@ -17,8 +17,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
-    definition(name: "Tasmota Child Temp/Humidity Sensor", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.thermostat") {
+    definition(name: "Tasmota Child Temp/Humidity Sensor", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.thermostat", vid: "60f649d4-4d75-32f0-9002-6c50d1380815", mnmn: "SmartThingsCommunity") {
         capability "Configuration"
         capability "Refresh"
         capability "Temperature Measurement"
@@ -30,6 +31,7 @@ metadata {
     preferences {
         input "tempOffset", "number", title: "Temperature Offset", description: "Adjust temperature by this many degrees", range: "*..*", displayDuringSetup: false
         input "humidityOffset", "number", title: "Humidity Offset", description: "Adjust humidity by this percentage", range: "*..*", displayDuringSetup: false
+        input(title: "", description: "Tasmota Child Temp/Humidity Sensor v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
     }
 
     tiles(scale: 2) {

@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota RF Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
@@ -48,6 +49,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota RF Bridge v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 
@@ -144,15 +146,15 @@ def parseEvents(status, json) {
             if (json?.RfReceived?.Data != null && json?.RfReceived?.Data.toUpperCase() != 'NONE') {
                 rfData = json.RfReceived.Data.toUpperCase()
                 message.rfData = rfData
-                events << sendEvent(name: "rfData", value: rfData as String, isStateChange: true, displayed: false)
+                events << sendEvent(name: "rfData", value: rfData?.toString(), isStateChange: true, displayed: false)
                 events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
-                events << sendEvent(name: "lastReceived", value: rfData as String, isStateChange: true)
+                events << sendEvent(name: "lastReceived", value: rfData?.toString(), isStateChange: true)
                 log.debug "RfReceived#Data: '${rfData}'"
             }
             if (json?.RfReceived?.RfKey != null && json?.RfReceived?.RfKey != 'NONE') {
                 rfKey = json.RfReceived.RfKey
                 message.rfKey = rfKey
-                events << sendEvent(name: "rfKey", value: rfKey as String, isStateChange:true, displayed: false)
+                events << sendEvent(name: "rfKey", value: rfKey?.toString(), isStateChange:true, displayed: false)
                 log.debug "RfReceived#RfKey: '${rfKey}'"
             }
         }

@@ -21,6 +21,7 @@ private getButtonLabels() {[
 ]}
 
 import groovy.json.JsonOutput
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota Virtual 6 Button", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "x.com.st.d.remotecontroller", mcdSync: true, vid: "generic-6-button") {
         capability "Button"
@@ -38,6 +39,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota Virtual 6 Button v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 

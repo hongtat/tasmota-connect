@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition(name: "Tasmota Child Switch Device", namespace: "hongtat", author: "HongTat Tan", vid: "generic-switch") {
         capability "Switch"

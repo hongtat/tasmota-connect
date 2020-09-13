@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota Virtual Motion Sensor", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "x.com.st.d.sensor.motion", vid: "generic-motion-2") {
         capability "Configuration"
@@ -34,6 +35,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota Virtual Motion Sensor v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
     tiles(scale: 2) {

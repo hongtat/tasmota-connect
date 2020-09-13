@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota Virtual Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.switch", vid: "generic-switch") {
         capability "Switch"
@@ -36,6 +37,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota Virtual Switch v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 

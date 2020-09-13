@@ -23,6 +23,7 @@ import groovy.transform.Field
 @Field final IntRange COLOR_TEMP_RANGE = (2000..6536) // 153..500 (2000..6536)
 @Field final Integer  COLOR_TEMP_DEFAULT = COLOR_TEMP_RANGE.getFrom() + ((COLOR_TEMP_RANGE.getTo() - COLOR_TEMP_RANGE.getFrom())/2)
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota CCT Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "63ddbf2c-9f14-37b5-bcbc-16020731aca7", mnmn: "SmartThingsCommunity") {
         capability "Health Check"
@@ -52,6 +53,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota CCT Light v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 
@@ -114,6 +116,7 @@ def initialize() {
     try {
         "run$syncFrequency"(refresh)
     } catch (all) { }
+    sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
     parent.callTasmota(this, "Backlog Rule1 ON Power#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"POWER\":\"%value%\"},\"cb\":\"Status 11\"} ENDON ON Power1#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"POWER1\":\"%value%\"},\"cb\":\"Status 11\"} ENDON ON Dimmer#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"Dimmer\":\"%value%\"},\"cb\":\"Status 11\"} ENDON;Rule1 1")

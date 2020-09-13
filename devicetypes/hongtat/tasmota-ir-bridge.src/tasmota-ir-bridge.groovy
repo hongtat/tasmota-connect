@@ -21,6 +21,7 @@ import groovy.json.JsonOutput
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota IR Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
@@ -52,6 +53,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota IR Bridge v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 
@@ -145,9 +147,9 @@ def parseEvents(status, json) {
             if (json?.IrReceived?.Data != null && json?.IrReceived?.Data.toUpperCase() != 'NONE') {
                 irData = json.IrReceived.Data.toUpperCase()
                 message.irData = irData
-                events << sendEvent(name: "irData", value: irData as String, isStateChange: true, displayed: false)
+                events << sendEvent(name: "irData", value: irData?.toString(), isStateChange: true, displayed: false)
                 events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
-                events << sendEvent(name: "lastReceived", value: irData as String, isStateChange: true)
+                events << sendEvent(name: "lastReceived", value: irData?.toString(), isStateChange: true)
                 log.debug "IrReceived#Data: '${irData}'"
             }
         }

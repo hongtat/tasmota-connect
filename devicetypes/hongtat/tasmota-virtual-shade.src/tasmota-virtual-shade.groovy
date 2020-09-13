@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+String driverVersion() { return "20200913" }
 metadata {
     definition (name: "Tasmota Virtual Shade", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.blind", vid: "generic-shade") {
         capability "Actuator"
@@ -36,6 +37,7 @@ metadata {
                     displayDuringSetup: false,
                     type: "paragraph",
                     element: "paragraph")
+            input(title: "", description: "Tasmota Virtual Shade v${driverVersion()}", displayDuringSetup: false, type: "paragraph", element: "paragraph")
         }
     }
 
