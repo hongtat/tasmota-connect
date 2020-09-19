@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20200919" }
 metadata {
     definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "beea8e9c-c35a-3f86-8be5-41113a35a700", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
@@ -32,6 +32,8 @@ metadata {
         attribute "lastSeen", "string"
         attribute "version", "string"
 
+        command "turnOff"
+        command "childTurnOff"
         command "low"
         command "medium"
         command "high"
@@ -113,7 +115,7 @@ def initialize() {
     sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
-    parent.callTasmota(this, "Backlog Rule1 ON FanSpeed#data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"FanSpeed\":\"%value%\"}} ENDON ON Power1#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"POWER1\":\"%value%\"}} ENDON;Rule1 1")
+    parent.callTasmota(this, "Backlog Rule1 ON FanSpeed#data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"FanSpeed\":\"%value%\"}} ENDON ON Power1#state DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"StatusSTS\":{\"POWER1\":\"%value%\"}} ENDON ON Wifi#Connected DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"cb\":\"Status 11\"} ENDON;Rule1 1")
     refresh()
 }
 
@@ -229,6 +231,12 @@ def off() {
     parent.callTasmota(this, "FanSpeed 0")
 }
 
+def turnOff() {
+    sendEvent(name: "switch", value: "off")
+    sendEvent(name: "level", value: 0, displayed: false)
+    sendEvent(name: "fanSpeed", value: 0)
+}
+
 def setLevel(value, rate = null) {
     def level = value as Integer
     level = level == 255 ? level : Math.max(Math.min(level, 99), 0)
@@ -312,4 +320,6 @@ def childOff(dni) {
     parent.callTasmota(this, "POWER1 0")
 }
 
-
+def childTurnOff() {
+    childDevices[0]?.sendEvent(name: "switch", value: "off")
+}
