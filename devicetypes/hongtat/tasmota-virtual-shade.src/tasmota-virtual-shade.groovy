@@ -17,7 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+import groovy.json.JsonOutput
+String driverVersion() { return "20201004" }
 metadata {
     definition (name: "Tasmota Virtual Shade", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.blind", vid: "generic-shade") {
         capability "Actuator"
@@ -142,6 +143,7 @@ def ping() {
 
 def installed() {
     sendEvent(name: "checkInterval", value: 30 * 60 + 2 * 60, displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
+    sendEvent(name: "supportedWindowShadeCommands", value: JsonOutput.toJson(["open", "close", "pause"]), displayed: false)
     sendEvent(name: "windowShade", value: "open", isStateChange: true)
 }
 

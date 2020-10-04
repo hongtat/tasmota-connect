@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200919" }
+String driverVersion() { return "20201004" }
 metadata {
     definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "beea8e9c-c35a-3f86-8be5-41113a35a700", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
@@ -220,14 +220,29 @@ def parseEvents(status, json) {
 }
 
 def on() {
-    if (state?.lastFanSpeed) {
-        setFanSpeed(state.lastFanSpeed)
-    } else {
-        setFanSpeed("2")
+    def healthState = parent.childSetting(device.id, "health_state")
+    def fanSpeed = (state?.lastFanSpeed) ? state.lastFanSpeed : "2"
+    if (healthState == true) {
+        def rawLevel = 2
+        if (fanSpeed == 1) {
+            rawLevel = 32
+        } else if (fanSpeed == 2) {
+            rawLevel = 66
+        } else if (fanSpeed == 3) {
+            rawLevel = 100
+        }
+        sendEvent(name: "switch", value: "on")
+        sendEvent(name: "level", value: rawLevel, displayed: false)
+        sendEvent(name: "fanSpeed", value: fanSpeed)
     }
+    setFanSpeed(fanSpeed)
 }
 
 def off() {
+    def healthState = parent.childSetting(device.id, "health_state")
+    if (healthState == true) {
+        turnOff()
+    }
     parent.callTasmota(this, "FanSpeed 0")
 }
 
@@ -294,6 +309,13 @@ def refresh(dni=null) {
     def lastRefreshed = state.lastRefreshed
     if (lastRefreshed && (now() - lastRefreshed < 5000)) return
     state.lastRefreshed = now()
+
+    def healthState = parent.childSetting(device.id, "health_state")
+    if (healthState == true) {
+        // Mark device as "always online"
+        sendEvent(name: "switch", value: device.currentValue("switch"))
+        childDevices[0]?.sendEvent(name: "switch", value: childDevices[0]?.currentValue("switch"))
+    }
 
     // Check version every 30m
     def lastCheckedVersion = state.lastCheckedVersion

@@ -3,14 +3,21 @@ Tasmota (Connect) is a SmartApp & Device Type for [Samsung SmartThings](https://
 
 See [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback, questions and troubleshooting.
 
+
+[![GitHub stars](https://img.shields.io/github/stars/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/network)
+[![GitHub license](https://img.shields.io/github/license/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/blob/master/LICENSE)
+[![donate](https://img.shields.io/badge/donate-PayPal-blue.svg?style=for-the-badge)](https://paypal.me/hongtat79/5usd)
+
+
 ## Features
-* Full support for [SmartThings (new) App](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect) & [SmartThings (Classic) App](https://play.google.com/store/apps/details?id=com.smartthings.android) 
+* Full support for [SmartThings (new) App](https://play.google.com/store/apps/details?id=com.samsung.android.oneconnect) 
 * Real-time device status
 * Pure Tasmota & SmartThings integration (No need for additional MQTT bridge)
 * Virtual Device (for RF / IR devices that can be controlled by a RF / IR bridge) 
 
 ## Requirement
-* Samsung SmartThings Hub
+* Samsung SmartThings Hub v2 or v3
 * Official [Tasmota](https://github.com/arendst/Tasmota/releases) Firmware >=8.10
 
 #### Tasmota Firmware
@@ -159,6 +166,11 @@ Please see under RF Bridge & IR Remote - https://tasmota.github.io/docs/Commands
 
 #### I have feedback, questions, suggestion..
 Please use [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback and questions.
+
+## Support Us
+
+If you find Tasmota (Connect) SmartApp useful and would like to support our efforts, please consider [_**making a donation via Paypal**_](https://paypal.me/hongtat79/5usd).
+Thanks for your support.
 
 ## License
 GPL-3.0

@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.8" }
+String appVersion() { return "1.0.9" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -49,12 +49,12 @@ def mainPage() {
             }
             section("Installed Devices"){
                 getChildDevices().sort({ a, b -> a.label <=> b.label }).each {
-                    def typeName = it.typeName
+                    String typeName = it.typeName
                     if (moduleMap().find{ it.value.type == "${typeName}" }?.value?.settings?.contains('ip')) {
-                        def actualDni = it.deviceNetworkId
-                        def descText = ""
+                        String actualDni = it.deviceNetworkId
+                        String descText = ""
                         if (childSetting(it.id, "ip") != null) {
-                            def dni = it.state?.dni
+                            String dni = it.state?.dni
                             descText = childSetting(it.id, "ip")
                             if ((dni != null && dni != actualDni) || (dni == null)) {
                                 descText += ' (!!!)'
@@ -135,6 +135,15 @@ def configureDevice(params){
                         title: "RF/IR Bridge",
                         description: "Select a RF/IR bridge to communicate with RF/IR device",
                         multiple: false, required: false, options: childDevicesByType(["Tasmota RF Bridge", "Tasmota IR Bridge"]), submitOnChange: true)
+            }
+        }
+        // Whether to mark device as "always online"
+        if (moduleParameter && moduleParameter.settings.contains('healthState')) {
+            section("Health State") {
+                input ("dev:${state.currentId}:health_state", "bool",
+                        title: "Health State",
+                        description: "Mark device as Always Online",
+                        defaultValue: false, required: false, submitOnChange: true)
             }
         }
         // Virtual Switch
@@ -289,8 +298,8 @@ def configureDevice(params){
         // Potential Problem
         if (moduleParameter && moduleParameter.settings.contains('ip')) {
             def dc = getChildDevice(state.currentDeviceId)
-            def dni = dc.state?.dni
-            def actualDni = dc.deviceNetworkId
+            String dni = dc.state?.dni
+            String actualDni = dc.deviceNetworkId
             if ((dni != null && dni != actualDni)) {
                 section("Potential Problem Detected") {
                     paragraph "It appears that this device is either offline or there is another device using the same IP address or Device Network ID."
@@ -326,7 +335,7 @@ def deleteDeviceConfirm(){
 }
 
 def addDevice(){
-    def deviceOptions = [:]
+    Map deviceOptions = [:]
     moduleMap().sort({a, b -> a.value.name <=> b.value.name}).each { k,v ->
         deviceOptions[k] = v.name
     }
@@ -498,7 +507,7 @@ def getJson(str) {
             }
         }
         if ((parts.length == 3) && parts[1].startsWith('/?json=')) {
-            def rawCode = parts[1].split("json=")[1].trim().replace('%20', ' ')
+            String rawCode = parts[1].split("json=")[1].trim().replace('%20', ' ')
             if ((rawCode.startsWith("{") && rawCode.endsWith("}")) || (rawCode.startsWith("[") && rawCode.endsWith("]"))) {
                 json = new JsonSlurper().parseText(rawCode)
             }
@@ -507,7 +516,7 @@ def getJson(str) {
     return json
 }
 
-def setNetworkAddress(mac) {
+def setNetworkAddress(String mac) {
     mac.toUpperCase().replaceAll(':', '')
 }
 
@@ -532,8 +541,8 @@ def channelNumber(String dni) {
  * @param typeList
  * @return
  */
-def childDevicesByType(typeList) {
-    def result = []
+def childDevicesByType(List typeList) {
+    List result = []
     if (typeList && typeList.size() > 0) {
         getChildDevices().each {
             if (it.typeName in typeList) {
@@ -544,8 +553,8 @@ def childDevicesByType(typeList) {
     return result
 }
 
-def moduleMap() {
-    def customModule = [
+Map moduleMap() {
+    Map customModule = [
         "1":    [name: ".Sonoff Basic / Mini / RF / SV", type: "Tasmota Generic Switch"],
         "4":    [name: ".Sonoff TH", type: "Tasmota Generic Switch", channel: 2, child: ["Tasmota Child Temp/Humidity Sensor"]],
         "5":    [name: ".Sonoff Dual / Dual R2", type: "Tasmota Generic Switch", channel: 2],
@@ -583,14 +592,14 @@ def moduleMap() {
         "1118": [name: "Virtual Motion Sensor", type: "Tasmota Virtual Motion Sensor"],
         "1119": [name: "Virtual Air Conditioner", type: "Tasmota Virtual Air Conditioner"]
     ]
-    def defaultModule = [
+    Map defaultModule = [
         "Tasmota Generic Switch":          [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
         "Tasmota Metering Switch":         [channel: 1, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
         "Tasmota Dimmer Switch":           [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
         "Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
         "Tasmota RGB Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
         "Tasmota CCT Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-        "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip"]],
+        "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip", "healthState"]],
         "Tasmota RF Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
         "Tasmota IR Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
         "Tasmota Virtual Contact Sensor":  [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualContactSensor", "bridge"]],
@@ -603,7 +612,7 @@ def moduleMap() {
         "Tasmota Virtual 6 Button":        [channel: 6, messaging: true,    virtual: true,  child: false, settings: ["virtualButton", "bridge"]],
         "Tasmota Virtual Air Conditioner": [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualAircon", "bridge"]]
     ]
-    def modules = [:]
+    Map modules = [:]
     customModule.each { k,v ->
         modules[k] = defaultModule[v.type] + v
     }
@@ -641,8 +650,8 @@ def generalSetting(String name) {
  * Health Check - online/offline
  * @return Integer
  */
-def checkInterval() {
-    def interval = ((generalSetting("frequency") ?: 'Every 1 minute').replace('Every ', '').replace(' minutes', '').replace(' minute', '').replace('1 hour', '60')) as Integer
+Integer checkInterval() {
+    Integer interval = ((generalSetting("frequency") ?: 'Every 1 minute').replace('Every ', '').replace(' minutes', '').replace(' minute', '').replace('1 hour', '60')) as Integer
     if (interval < 15) {
         return (interval * 2 * 60 + 1 * 60)
     } else {
@@ -683,7 +692,7 @@ def deleteChildSetting(id, name=null) {
         }
     } else if (id && name==null) {
         // otherwise, delete everything
-        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive", "hvac"].each { n ->
+        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive", "hvac", "health_state"].each { n ->
             app?.deleteSetting("dev:${id}:${n}" as String)
         }
         // button
