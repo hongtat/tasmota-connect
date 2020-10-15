@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201015" }
 metadata {
     definition (name: "Tasmota RF Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
@@ -104,8 +104,7 @@ def initialize() {
     sendEvent(name: "checkInterval", value: parent.checkInterval(), displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
 
     parent.callTasmota(this, "Status 5")
-    parent.callTasmota(this, "Backlog Rule1 ON RfReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"Data\":\"%value%\"}} ENDON ON RfReceived#RfKey DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"RfKey\":\"%value%\"}} ENDON;Rule1 1")
-    //parent.callTasmota(this, "Backlog Rule2 ON RfRaw#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfRaw\":{\"Data\":\"%value%\"}} ENDON;Rule2 1")
+    parent.callTasmota(this, "Backlog Rule1 ON RfReceived#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"Data\":\"%value%\"}} ENDON ON RfReceived#RfKey DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfReceived\":{\"RfKey\":\"%value%\"}} ENDON ON RfRaw#Data DO WebSend ["+device.hub.getDataValue("localIP") + ":" + device.hub.getDataValue("localSrvPortTCP")+"] /?json={\"RfRaw\":{\"Data\":\"%value%\"}} ENDON;Rule1 1")
     refresh()
 }
 
@@ -133,8 +132,8 @@ def parseEvents(status, json) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
         def now = new Date().format("${eventdateformat}a", location.timeZone)
-        def rfData = null
-        def rfKey = null
+        String rfData = null
+        String rfKey = null
 
         // Message
         def message = [:]
@@ -146,16 +145,30 @@ def parseEvents(status, json) {
             if (json?.RfReceived?.Data != null && json?.RfReceived?.Data.toUpperCase() != 'NONE') {
                 rfData = json.RfReceived.Data.toUpperCase()
                 message.rfData = rfData
-                events << sendEvent(name: "rfData", value: rfData?.toString(), isStateChange: true, displayed: false)
+                events << sendEvent(name: "rfData", value: rfData, isStateChange: true, displayed: false)
                 events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
-                events << sendEvent(name: "lastReceived", value: rfData?.toString(), isStateChange: true)
+                events << sendEvent(name: "lastReceived", value: rfData, isStateChange: true)
                 log.debug "RfReceived#Data: '${rfData}'"
             }
             if (json?.RfReceived?.RfKey != null && json?.RfReceived?.RfKey != 'NONE') {
                 rfKey = json.RfReceived.RfKey
                 message.rfKey = rfKey
-                events << sendEvent(name: "rfKey", value: rfKey?.toString(), isStateChange:true, displayed: false)
+                events << sendEvent(name: "rfKey", value: rfKey, isStateChange:true, displayed: false)
                 log.debug "RfReceived#RfKey: '${rfKey}'"
+            }
+        }
+        // RfRaw
+        if (json?.RfRaw != null) {
+            if (json?.RfRaw?.Data != null && json?.RfRaw?.Data.toUpperCase() != 'AAA055') {
+                String rawCode = json.RfRaw.Data.toUpperCase()
+                if ((rawCode.startsWith("AA B1 ") && rawCode.endsWith(" 55"))) {
+                    rfData = rawCode.split(" ")[-2]
+                    message.rfData = rfData
+                    events << sendEvent(name: "rfData", value: rfData, isStateChange: true, displayed: false)
+                    events << sendEvent(name: "lastEvent", value: now, isStateChange: true, displayed: false)
+                    events << sendEvent(name: "lastReceived", value: rfData, isStateChange: true)
+                    log.debug "RfRaw#Data: '${rfData}'"
+                }
             }
         }
 
