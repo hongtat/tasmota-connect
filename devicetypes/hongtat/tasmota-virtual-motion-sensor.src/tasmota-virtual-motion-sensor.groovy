@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201019" }
 metadata {
     definition (name: "Tasmota Virtual Motion Sensor", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "x.com.st.d.sensor.motion", vid: "generic-motion-2") {
         capability "Configuration"
@@ -90,7 +90,7 @@ def ping() {
 
 def installed() {
     sendEvent(name: "checkInterval", value: 30 * 60 + 2 * 60, displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
-    sendEvent(name: "motion", value: "inactive", displayed: false,)
+    sendEvent(name: "motion", value: "inactive", displayed: false)
 }
 
 def updated() {

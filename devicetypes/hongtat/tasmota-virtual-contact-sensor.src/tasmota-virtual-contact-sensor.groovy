@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201019" }
 metadata {
     definition (name: "Tasmota Virtual Contact Sensor", namespace: "hongtat", author: "HongTat Tan", vid: "generic-contact-3", ocfDeviceType: "x.com.st.d.sensor.contact") {
         capability "Configuration"
@@ -90,7 +90,7 @@ def ping() {
 
 def installed() {
     sendEvent(name: "checkInterval", value: 30 * 60 + 2 * 60, displayed: false, data: [protocol: "lan", hubHardwareId: device.hub.hardwareID])
-    sendEvent(name: "contact", value: "open", displayed: false,)
+    sendEvent(name: "contact", value: "open", displayed: false)
 }
 
 def updated() {
