@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.9" }
+String appVersion() { return "1.0.10" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -81,6 +81,14 @@ def mainPage() {
                         options: ["Every 1 minute", "Every 5 minutes", "Every 10 minutes", "Every 15 minutes", "Every 30 minutes", "Every 1 hour"],
                         defaultValue: "Every 5 minutes",
                         required: false, submitOnChange: false)
+            }
+            section(title: "SmartThings Hub") {
+                String st = getHub()?.localIP
+                if (st == null || st == '') {
+                    paragraph "Unable to find a SmartThings Hub. Do you have a physical SmartThings Hub (v2 or v3)?"
+                } else {
+                    paragraph "IP Address: ${st}"
+                }
             }
             remove("Remove (Includes Devices)", "This will remove all devices.")
         }
@@ -281,6 +289,11 @@ def configureDevice(params){
                             description: "Select air conditioner brand",
                             multiple: false, required: false, options: vendor, submitOnChange: true)
                     }
+                    section("Open/Close Sensor") {
+                        input ("dev:${state.currentId}:contactSensor", "capability.contactSensor", title: "Select Open/Close Sensor",
+                            description: "Choose the sensor that senses if the AC is On or Off",
+                            multiple: false, required: false)
+                    }
                 } else {
                     deleteChildSetting(state.currentId, "hvac")
                     section("Air Conditioner brand") {
@@ -365,9 +378,9 @@ def addDeviceConfirm() {
             state?.deviceList = deviceList
 
             // Cross-device Messaging
-            if (selectedDevice?.messaging == true) {
-                subscribe(virtualParent, "messenger", crossDeviceMessaging)
-            }
+            //if (selectedDevice?.messaging == true) {
+            //    subscribe(virtualParent, "messenger", crossDeviceMessaging)
+            //}
 
             // Does this have child device(s)?
             def channel = selectedDevice?.channel
@@ -440,10 +453,24 @@ def uninstalled() {
 def updated() {
     if (!state?.nextDni) { state?.nextDni = 1 }
     if (!state?.deviceList) { state?.deviceList = [] }
-    log.debug "Updated with settings: ${settings}"
+    //log.debug "Updated with settings: ${settings}"
 
-    // Re-Initialize all child devices
-    getChildDevices().each { it.initialize() }
+    unsubscribe()
+
+    // Subscription
+    getChildDevices().eachWithIndex { cd, i ->
+        // contactSensor
+        def cs = childSetting(cd.id, "contactSensor")
+        if (cs != null) {
+            subscribe(cs, "contact", contactHandler)
+        }
+        // crossDeviceMessaging
+        def selectedDevice = moduleMap().find{ it.value.type == cd.typeName }?.value
+        if (selectedDevice?.messaging == true) {
+            subscribe(cd, "messenger", crossDeviceMessaging)
+        }
+        cd.initialize()
+    }
 
     // Clean up uninstalled devices
     def deviceList = state?.deviceList ?: []
@@ -637,6 +664,20 @@ def crossDeviceMessaging(evt) {
     }
 }
 
+void contactHandler(evt) {
+    def d = evt.getDevice()
+    def virtualDevices = moduleMap().findAll{ it.value.virtual }?.collect { it.value.type }
+
+    Map message = [:]
+    message.contactSensor = evt.value
+    getChildDevices().findAll { it.typeName in virtualDevices }?.each {
+        def cs = childSetting(it.id, "contactSensor")
+        if (cs && cs.id == d.id) {
+            it.parseEvents(200, message)
+        }
+    }
+}
+
 /**
  * Get SmartApp's general setting value
  * @param name
@@ -692,7 +733,7 @@ def deleteChildSetting(id, name=null) {
         }
     } else if (id && name==null) {
         // otherwise, delete everything
-        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive", "hvac", "health_state"].each { n ->
+        ["ip", "username", "password", "bridge", "command_on", "command_off", "track_state", "payload_on", "payload_off", "off_delay", "command_open", "command_close", "command_pause", "payload_open", "payload_close", "payload_pause", "payload_active", "payload_inactive", "hvac", "contactSensor", "health_state"].each { n ->
             app?.deleteSetting("dev:${id}:${n}" as String)
         }
         // button

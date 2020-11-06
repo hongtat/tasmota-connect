@@ -18,7 +18,7 @@
  */
 
 import groovy.json.JsonOutput
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201106" }
 metadata {
     definition (name: "Tasmota Virtual Air Conditioner", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.airconditioner", vid: "ff0a15cd-13dd-32c2-b51c-780bb3aad494", mnmn: "SmartThingsCommunity") {
         capability "Actuator"
@@ -119,6 +119,29 @@ def parse(description) {
 def parseEvents(status, json) {
     def events = []
     if (status as Integer == 200) {
+        // Contact sensor that senses if the AC is On or Off
+        if (json?.contactSensor) {
+            String cs = json?.contactSensor
+            Map modeMap = [name: "thermostatMode", data:[supportedThermostatModes: supportedThermostatModes.encodeAsJson()]]
+            Map switchMap = [name: "switch"]
+            if (cs in ["open", "closed"]) {
+                if (cs == "open") {
+                    switchMap.value = "on"
+                    if (state?.lastMode) {
+                        modeMap.value = state.lastMode
+                    } else {
+                        modeMap.value = "cool"
+                    }
+                    modeMap.displayed = true
+                } else {
+                    switchMap.value = "off"
+                    modeMap.value = "off"
+                    modeMap.displayed = true
+                }
+                events << sendEvent(switchMap)
+                events << sendEvent(modeMap)
+            }
+        }
         // Bridge's Last seen
         if (json?.lastSeen) {
             events << sendEvent(name: "lastSeen", value: json?.lastSeen, displayed: false)

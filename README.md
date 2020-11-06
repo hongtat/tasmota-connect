@@ -111,7 +111,7 @@ Virtual Shade           | Add a SmartThings shade/blind that can be controlled b
 Virtual Button          | Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
 Virtual Contact Sensor  | Add a RF contact sensor
 Virtual Motion Sensor   | Add a RF motion sensor
-Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands))
+Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands)) <br><br>(optional) Use a contact sensor to sense if the AC is ON or OFF.
 
 #### Configuring a Virtual Switch
 1. Choose a RF or IR Bridge
@@ -141,6 +141,7 @@ Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor
 #### Configuring a Virtual Air Conditioner
 1. Choose an IR Bridge
 2. Select air conditioner brand ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands))
+3. (Optional) Select a contact sensor to sense if the AC is ON or OFF
 
 ## FAQ
 
