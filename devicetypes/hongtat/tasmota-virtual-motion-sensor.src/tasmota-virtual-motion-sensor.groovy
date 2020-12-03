@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201019" }
+String driverVersion() { return "20201204" }
 metadata {
     definition (name: "Tasmota Virtual Motion Sensor", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "x.com.st.d.sensor.motion", vid: "generic-motion-2") {
         capability "Configuration"
@@ -73,6 +73,7 @@ def parseEvents(status, json) {
         }
         // Bridge's Last seen
         if (json?.lastSeen) {
+            events << sendEvent(name: "motion", value: device.currentValue("motion"))
             events << sendEvent(name: "lastSeen", value: json?.lastSeen, displayed: false)
         }
     }

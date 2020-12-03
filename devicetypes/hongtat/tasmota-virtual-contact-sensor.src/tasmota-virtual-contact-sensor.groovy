@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201019" }
+String driverVersion() { return "20201204" }
 metadata {
     definition (name: "Tasmota Virtual Contact Sensor", namespace: "hongtat", author: "HongTat Tan", vid: "generic-contact-3", ocfDeviceType: "x.com.st.d.sensor.contact") {
         capability "Configuration"
@@ -73,6 +73,7 @@ def parseEvents(status, json) {
         }
         // Bridge's Last seen
         if (json?.lastSeen) {
+            events << sendEvent(name: "contact", value: device.currentValue("contact"))
             events << sendEvent(name: "lastSeen", value: json?.lastSeen, displayed: false)
         }
     }

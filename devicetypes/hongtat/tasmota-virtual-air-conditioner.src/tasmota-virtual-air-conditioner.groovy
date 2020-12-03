@@ -18,7 +18,7 @@
  */
 
 import groovy.json.JsonOutput
-String driverVersion() { return "20201106" }
+String driverVersion() { return "20201204" }
 metadata {
     definition (name: "Tasmota Virtual Air Conditioner", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.airconditioner", vid: "ff0a15cd-13dd-32c2-b51c-780bb3aad494", mnmn: "SmartThingsCommunity") {
         capability "Actuator"
@@ -144,6 +144,7 @@ def parseEvents(status, json) {
         }
         // Bridge's Last seen
         if (json?.lastSeen) {
+            events << sendEvent(name: "switch", value: device.currentValue("switch"))
             events << sendEvent(name: "lastSeen", value: json?.lastSeen, displayed: false)
         }
     }
