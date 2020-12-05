@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201031" }
+String driverVersion() { return "20201205" }
 metadata {
     definition(name: "Tasmota Metering Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.switch", vid: "73aa37e5-de20-30e6-b36f-16837d255356", mnmn: "SmartThingsCommunity") {
         capability "Energy Meter"
@@ -140,7 +140,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
 
         // Power
         if (channel != null) {

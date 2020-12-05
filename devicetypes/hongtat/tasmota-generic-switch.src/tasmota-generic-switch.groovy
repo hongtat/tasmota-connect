@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201205" }
 metadata {
     definition(name: "Tasmota Generic Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.switch", vid: "af06f1a5-45b6-39ee-86bb-7cbe15062491", mnmn: "SmartThingsCommunity") {
         capability "Actuator"
@@ -126,7 +126,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
 
         // Power
         if (channel != null) {

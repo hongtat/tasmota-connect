@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201015" }
+String driverVersion() { return "20201205" }
 metadata {
     definition (name: "Tasmota RF Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
@@ -131,7 +131,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
         String rfData = null
         String rfKey = null
 

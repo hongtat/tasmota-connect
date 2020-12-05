@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201004" }
+String driverVersion() { return "20201205" }
 metadata {
     definition(name: "Tasmota Fan Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.fan", vid: "beea8e9c-c35a-3f86-8be5-41113a35a700", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
@@ -142,7 +142,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
 
         // FanSpeed
         def fanSpeed = (json?.StatusSTS?.FanSpeed != null) ? json?.StatusSTS?.FanSpeed as Integer : ((json?.FanSpeed != null) ? json?.FanSpeed as Integer : null)

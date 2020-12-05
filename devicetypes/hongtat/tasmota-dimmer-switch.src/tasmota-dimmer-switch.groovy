@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201205" }
 metadata {
     definition(name: "Tasmota Dimmer Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "63ddbf2c-9f14-37b5-bcbc-16020731aca7", mnmn: "SmartThingsCommunity") {
         capability "Switch Level"
@@ -139,7 +139,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
         if (channel == null) {
             device.updateDataValue("endpoints", 1 as String)
             channel = 1

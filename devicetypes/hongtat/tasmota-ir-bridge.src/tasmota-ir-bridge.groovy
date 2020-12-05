@@ -21,7 +21,7 @@ import groovy.json.JsonOutput
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201205" }
 metadata {
     definition (name: "Tasmota IR Bridge", namespace: "hongtat", author: "HongTat Tan", vid: "208a0e78-3620-3eb8-8381-6066df487473", mnmn: "SmartThingsCommunity") {
         capability "Notification"
@@ -134,7 +134,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
         def irData = null
 
         // Message

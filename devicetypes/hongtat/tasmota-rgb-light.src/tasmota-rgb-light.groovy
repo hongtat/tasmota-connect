@@ -21,7 +21,7 @@ import groovy.transform.Field
 
 @Field final IntRange PERCENT_RANGE = (0..100)
 
-String driverVersion() { return "20200913" }
+String driverVersion() { return "20201205" }
 metadata {
     definition (name: "Tasmota RGB Light", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.light", vid: "353ddcba-2bd6-3cfe-9570-ea94be3957ca", mnmn: "SmartThingsCommunity") {
         capability "Health Check"
@@ -145,7 +145,7 @@ def parseEvents(status, json) {
     if (status as Integer == 200) {
         def channel = getDataValue("endpoints")?.toInteger()
         def eventdateformat = parent.generalSetting("dateformat")
-        def now = new Date().format("${eventdateformat}a", location.timeZone)
+        def now = location.timeZone ? new Date().format("${eventdateformat}a", location.timeZone) : new Date().format("yyyy MMM dd EEE h:mm:ss")
 
         // Power
         if (channel != null) {
