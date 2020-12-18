@@ -382,9 +382,11 @@ def addDeviceConfirm() {
                     parentChildName = (selectedDevice.child[i - 2]) ?: parentChildName
                     virtualParentChild[i] = parentChildName
                 }
-                virtualParentData["endpoints"] = channel as String
                 virtualParentData["child"] = virtualParentChild.encodeAsJson()
             }
+        }
+        if (channel != null) {
+            virtualParentData["endpoints"] = channel as String
         }
         try {
             def virtualParent = addChildDevice("hongtat", selectedDevice?.type, "AWFULLYSMART-tasmota-${latestDni}", getHub()?.id, [
