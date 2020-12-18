@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.0.10" }
+String appVersion() { return "1.1" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -53,6 +53,10 @@ def mainPage() {
                     if (moduleMap().find{ it.value.type == "${typeName}" }?.value?.settings?.contains('ip')) {
                         String actualDni = it.deviceNetworkId
                         String descText = ""
+                        // If the device network id doesn't match the Tasmota device MAC (w/o ":"), it will not work correctly.
+                        // Manually modifying the DNI to "fix" this issue is likely not going to work. :)
+                        // Make sure you have a physical SmartThings hub v2 or v3,
+                        // Tasmota devices and ST hub are on static IP and on the same subnetwork.
                         if (childSetting(it.id, "ip") != null) {
                             String dni = it.state?.dni
                             descText = childSetting(it.id, "ip")
@@ -367,47 +371,31 @@ def addDeviceConfirm() {
     def latestDni = state.nextDni
     if (virtualDeviceType) {
         def selectedDevice = moduleMap().find{ it.key == virtualDeviceType }.value
+        Map virtualParentData = [:]
+        // Does this have child device(s)?
+        def channel = selectedDevice?.channel
+        if (channel != null && selectedDevice?.child != false) {
+            if (channel > 1) {
+                String parentChildName = selectedDevice.child[0]
+                Map virtualParentChild = [:]
+                for (i in 2..channel) {
+                    parentChildName = (selectedDevice.child[i - 2]) ?: parentChildName
+                    virtualParentChild[i] = parentChildName
+                }
+                virtualParentData["endpoints"] = channel as String
+                virtualParentData["child"] = virtualParentChild.encodeAsJson()
+            }
+        }
         try {
             def virtualParent = addChildDevice("hongtat", selectedDevice?.type, "AWFULLYSMART-tasmota-${latestDni}", getHub()?.id, [
                     "completedSetup": true,
-                    "label": deviceName
+                    "label": deviceName,
+                    "data": virtualParentData
             ])
             // Tracks all installed devices
             def deviceList = state?.deviceList ?: []
             deviceList.push(virtualParent.id as String)
             state?.deviceList = deviceList
-
-            // Cross-device Messaging
-            //if (selectedDevice?.messaging == true) {
-            //    subscribe(virtualParent, "messenger", crossDeviceMessaging)
-            //}
-
-            // Does this have child device(s)?
-            def channel = selectedDevice?.channel
-            log.debug "channel: " + channel
-            if (channel != null && selectedDevice?.child != false) {
-                if (channel > 1) {
-                    try {
-                        def parentChildName = selectedDevice.child[0]
-                        for (i in 2..channel) {
-                            parentChildName = (selectedDevice.child[i-2]) ?: parentChildName
-                            String dni = "${virtualParent.deviceNetworkId}-ep${i}"
-                            def virtualParentChild = virtualParent.addChildDevice(parentChildName, dni, virtualParent.hub.id,
-                                    [completedSetup: true, label: "${virtualParent.displayName} ${i}", isComponent: false])
-                            log.debug "Created '${virtualParent.displayName}' - ${i}ch"
-                        }
-                    } catch (all) {
-                        dynamicPage(name: "addDeviceConfirm", title: "Add a device", nextPage: "mainPage") {
-                            section {
-                                paragraph "Error: ${(all as String).split(":")[1]}."
-                            }
-                        }
-                    }
-                }
-            }
-            if (channel != null) {
-                virtualParent.updateDataValue("endpoints", channel as String)
-            }
             virtualParent.initialize()
             latestDni++
             state.nextDni = latestDni

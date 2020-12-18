@@ -17,7 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-String driverVersion() { return "20201205" }
+String driverVersion() { return "20201218" }
+import groovy.json.JsonSlurper
 metadata {
     definition(name: "Tasmota Metering Switch", namespace: "hongtat", author: "HongTat Tan", ocfDeviceType: "oic.d.switch", vid: "73aa37e5-de20-30e6-b36f-16837d255356", mnmn: "SmartThingsCommunity") {
         capability "Energy Meter"
@@ -102,6 +103,28 @@ def initialize() {
     if (device.hub == null) {
         log.error "Hub is null, must set the hub in the device settings so we can get local hub IP and port"
         return
+    }
+    // Child creation
+    String childMeta = getDataValue("child")
+    if (childMeta != null && ((childMeta.startsWith("{") && childMeta.endsWith("}")) || (childMeta.startsWith("[") && childMeta.endsWith("]")))) {
+        def json = new JsonSlurper().parseText(childMeta)
+        if (json != null) {
+            boolean hasError = false
+            json.each { i,tasmota ->
+                try {
+                    String dni = "${device.deviceNetworkId}-ep${i}"
+                    addChildDevice(tasmota, dni, device.getHub().getId(),
+                            [completedSetup: true, label: "${device.displayName} ${i}", isComponent: false])
+                    log.debug "Created '${device.displayName}' - ${i}ch (${tasmota})"
+                } catch (all) {
+                    hasError = true
+                    log.error "Error: ${(all as String).split(":")[1]}."
+                }
+            }
+            if (hasError == false) {
+                updateDataValue("child","")
+            }
+        }
     }
 
     def syncFrequency = (parent.generalSetting("frequency") ?: 'Every 1 minute').replace('Every ', 'Every').replace(' minute', 'Minute').replace(' hour', 'Hour')

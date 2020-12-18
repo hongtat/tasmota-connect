@@ -108,7 +108,7 @@ Virtual Device | Usage
 ---- | ----
 Virtual Switch          | Add a SmartThings generic switch that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
 Virtual Shade           | Add a SmartThings shade/blind that can be controlled by a RF / IR bridge (e.g. Sonoff RF Bridge).
-Virtual Button          | Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.
+Virtual Button          | Add RF/IR remote controller 1/2/4/6-button as SmartThings remote controller button.<br><br>The **Virtual 1-button** has additional capabilities: <ul><li>Push/Momentary Capability</li><li>Motion Sensor Capability (useful for Alexa)</li></ul>
 Virtual Contact Sensor  | Add a RF contact sensor
 Virtual Motion Sensor   | Add a RF motion sensor
 Virtual Air Conditioner | Add a IR virtual air conditioner ([supported AC vendor/brands](https://tasmota.github.io/docs/Tasmota-IR/#sending-irhvac-commands)) <br><br>(optional) Use a contact sensor to sense if the AC is ON or OFF.
