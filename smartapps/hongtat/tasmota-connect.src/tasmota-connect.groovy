@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.1" }
+String appVersion() { return "1.1.1" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
