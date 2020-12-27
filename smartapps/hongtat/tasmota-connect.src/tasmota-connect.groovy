@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-String appVersion() { return "1.1.1" }
+String appVersion() { return "1.1.2" }
 
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -577,7 +577,7 @@ Map moduleMap() {
         "5":    [name: ".Sonoff Dual / Dual R2", type: "Tasmota Generic Switch", channel: 2],
         "6":    [name: ".Sonoff Pow / Pow R2 / S31", type: "Tasmota Metering Switch"],
         "25":   [name: ".Sonoff Bridge", type: "Tasmota RF Bridge"],
-        "44":   [name: ".Sonoff iFan", type: "Tasmota Fan Light", channel: 2],
+        "44":   [name: ".Sonoff iFan", type: "Tasmota Fan", channel: 2],
         "1000": [name: "Generic Switch (1ch)", type: "Tasmota Generic Switch"],
         "1001": [name: "Generic Switch (2ch)", type: "Tasmota Generic Switch", channel: 2],
         "1002": [name: "Generic Switch (3ch)", type: "Tasmota Generic Switch", channel: 3],
@@ -616,7 +616,7 @@ Map moduleMap() {
         "Tasmota RGBW Light":              [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
         "Tasmota RGB Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
         "Tasmota CCT Light":               [channel: 1, messaging: false,   virtual: false, child: false, settings: ["ip"]],
-        "Tasmota Fan Light":               [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip", "healthState"]],
+        "Tasmota Fan":                     [channel: 2, messaging: false,   virtual: false, child: ["Tasmota Child Switch Device"], settings: ["ip", "healthState"]],
         "Tasmota RF Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
         "Tasmota IR Bridge":               [channel: 1, messaging: true,    virtual: false, child: false, settings: ["ip"]],
         "Tasmota Virtual Contact Sensor":  [channel: 1, messaging: true,    virtual: true,  child: false, settings: ["virtualContactSensor", "bridge"]],
