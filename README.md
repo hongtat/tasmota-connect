@@ -1,4 +1,23 @@
-## Tasmota (Connect)
+-----
+
+# NO LONGER SUPPORTED
+
+Following the announcement of [The End of the SmartThings platform built on Grovvy](https://community.smartthings.com/t/the-end-of-groovy-has-arrived/246280), Tasmota (Connect) will no longer be supported and may not work after September 30, 2022, at 00:00 (PST).
+
+-----
+
+**Please migrate your devices to [Tasmota Edge](https://community.smartthings.com/t/st-edge-tasmota-edge-for-sonoff-tuya-many-other-esp-wifi-devices-over-2000-tasmota-supported-devices/241493).**
+
+**Tasmota Edge utilizes the latest SmartThings Edge platform technology.**
+
+Please see this [SmartThings Community - Tasmota Edge topic](https://community.smartthings.com/t/st-edge-tasmota-edge-for-sonoff-tuya-many-other-esp-wifi-devices-over-2000-tasmota-supported-devices/241493) for more information.
+
+
+-----
+
+..
+
+### Tasmota (Connect)
 Tasmota (Connect) is a SmartApp & Device Type for [Samsung SmartThings](https://www.smartthings.com/), that allows you to add your [Tasmota](https://github.com/arendst/Tasmota) devices as SmartThings devices.
 
 See [SmartThings Community](https://community.smartthings.com/t/release-tasmota-connect-pure-tasmota-st-integration-real-time-status-for-sonoff-tuya-smartlife-other-esp8266-devices/187553) for feedback, questions and troubleshooting.
@@ -7,7 +26,6 @@ See [SmartThings Community](https://community.smartthings.com/t/release-tasmota-
 [![GitHub stars](https://img.shields.io/github/stars/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/network)
 [![GitHub license](https://img.shields.io/github/license/hongtat/tasmota-connect?style=for-the-badge)](https://github.com/hongtat/tasmota-connect/blob/master/LICENSE)
-[![donate](https://img.shields.io/badge/donate-PayPal-blue.svg?style=for-the-badge)](https://paypal.me/hongtat79/5usd)
 
 
 ## Features
